@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: nexus-hub
+    runtime: static
+    buildCommand: echo "Site statique - pas de build nécessaire"
+    staticPublishPath: .
+    pullRequestPreviewsEnabled: true
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=0, must-revalidate
+      - path: /static/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
