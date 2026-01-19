@@ -24,10 +24,10 @@ jobs:
       with:
         python-version: '3.x'
 
-    - name: Install dependencies (Instaloader)
+    - name: Install dependencies (Requests)
       run: |
         python -m pip install --upgrade pip
-        pip install instaloader
+        pip install requests
 
     - name: Execute Python script
       # 2. CORRECTION : PLACEMENT ET UTILISATION DU SESSION ID
