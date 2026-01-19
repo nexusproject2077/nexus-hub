@@ -30,9 +30,12 @@ def fetch_followers():
         
         print(f"Tentative de connexion avec Session ID pour l'utilisateur: {L_USERNAME}")
 
-        # CORRECTION DE LA MÉTHODE INSTALOADER : Utiliser l'injection directe de cookie
-        # Le nom du fichier de session à créer n'a pas d'importance ici.
-        L.context.store_session_info(TARGET_PROFILE, {"sessionid": L_SESSION_ID})
+        # CORRECTION DE LA MÉTHODE INSTALOADER : Utiliser l'injection directe de cookie via requests
+        # Instaloader utilise requests en interne, on injecte le cookie directement
+        L.context._session.cookies.set('sessionid', L_SESSION_ID, domain='.instagram.com')
+
+        # Optionnel mais recommandé : charger le profil de l'utilisateur connecté pour valider la session
+        L.test_login()
 
         # Charger le profil cible
         profile = instaloader.Profile.from_username(L.context, TARGET_PROFILE)
