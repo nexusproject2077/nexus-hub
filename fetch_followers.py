@@ -116,6 +116,8 @@ def fetch_followers():
         if response.status_code == 200:
             try:
                 json_data = response.json()
+                print(f"   ✅ Réponse JSON GraphQL reçue")
+                print(f"   📄 Structure JSON: {json.dumps(json_data, indent=2)[:500]}")
 
                 # Chercher dans la structure GraphQL
                 if 'data' in json_data and 'user' in json_data['data']:
@@ -126,9 +128,16 @@ def fetch_followers():
                         data['followers'] = followers
                         data['status'] = 'success_graphql'
                         return data
+                    else:
+                        print(f"   ⚠️ Structure user trouvée mais pas edge_followed_by")
+                        print(f"   Clés disponibles: {list(user.keys())[:10]}")
+                else:
+                    print(f"   ⚠️ Structure inattendue. Clés JSON: {list(json_data.keys())}")
 
-            except:
-                pass
+            except json.JSONDecodeError as e:
+                print(f"   ❌ Erreur JSON: {e}")
+            except Exception as e:
+                print(f"   ❌ Erreur extraction: {e}")
 
         # Méthode 3: Fallback - rechercher l'ID utilisateur puis les stats
         print("\n📡 Méthode 3: Recherche par ID utilisateur...")
@@ -142,24 +151,40 @@ def fetch_followers():
             timeout=15
         )
 
+        print(f"   Status: {response.status_code}")
+
         if response.status_code == 200:
             try:
                 search_data = response.json()
+                print(f"   ✅ Réponse JSON Search reçue")
+                print(f"   📄 Structure: {json.dumps(search_data, indent=2)[:300]}")
 
                 # Trouver l'utilisateur dans les résultats
-                for user_result in search_data.get('users', []):
+                users_found = search_data.get('users', [])
+                print(f"   Utilisateurs trouvés: {len(users_found)}")
+
+                for user_result in users_found:
                     user = user_result.get('user', {})
-                    if user.get('username', '').lower() == USERNAME.lower():
+                    username_found = user.get('username', '')
+                    print(f"   Checking: {username_found}")
+
+                    if username_found.lower() == USERNAME.lower():
                         # Essayer d'extraire le nombre d'abonnés
                         followers = user.get('follower_count', 0)
+                        print(f"   Trouvé le bon user! follower_count: {followers}")
+
                         if followers > 0:
                             print(f"   ✅ SUCCÈS! Abonnés: {followers}")
                             data['followers'] = followers
                             data['status'] = 'success_search'
                             return data
 
-            except:
-                pass
+                print(f"   ⚠️ Utilisateur {USERNAME} pas trouvé dans les résultats")
+
+            except json.JSONDecodeError as e:
+                print(f"   ❌ Erreur JSON: {e}")
+            except Exception as e:
+                print(f"   ❌ Erreur: {e}")
 
         # Si toutes les méthodes échouent
         print("\n❌ Toutes les méthodes API ont échoué")
