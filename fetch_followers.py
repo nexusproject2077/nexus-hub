@@ -33,9 +33,52 @@ def extract_followers_from_html(html_content):
 
         # Pattern 6: SharedData
         r'"userInteractionCount":"(\d+)"',
+
+        # Pattern 7: Script JSON (données embarquées)
+        r'"follower_count":(\d+)',
+
+        # Pattern 8: Meta description avec format différent
+        r'(\d+)\s+Followers,',
+
+        # Pattern 9: JSON dans script tag
+        r'window\._sharedData\s*=\s*({.+?});',
+
+        # Pattern 10: Nouveau format Instagram 2024/2025
+        r'"edge_follow":\{"count":(\d+)\}',
+
+        # Pattern 11: Dans les props
+        r'"props":\{[^}]*"follower_count":(\d+)',
     ]
 
-    for i, pattern in enumerate(patterns, 1):
+    # Essayer les patterns simples d'abord
+    for i, pattern in enumerate(patterns[:8], 1):
+        match = re.search(pattern, html_content, re.IGNORECASE)
+        if match:
+            followers = int(match.group(1))
+            print(f"   ✅ Pattern {i} a trouvé: {followers} abonnés")
+            return followers
+
+    # Pattern 9: SharedData (extraction JSON complète)
+    match = re.search(patterns[8], html_content)
+    if match:
+        try:
+            import json as json_lib
+            shared_data = json_lib.loads(match.group(1))
+            # Chercher dans le JSON
+            if 'entry_data' in shared_data:
+                for page_type, pages in shared_data['entry_data'].items():
+                    for page in pages:
+                        if 'graphql' in page and 'user' in page['graphql']:
+                            user = page['graphql']['user']
+                            if 'edge_followed_by' in user:
+                                followers = user['edge_followed_by']['count']
+                                print(f"   ✅ Pattern 9 (SharedData JSON) a trouvé: {followers} abonnés")
+                                return followers
+        except:
+            pass
+
+    # Patterns 10-11
+    for i, pattern in enumerate(patterns[9:], 10):
         match = re.search(pattern, html_content, re.IGNORECASE)
         if match:
             followers = int(match.group(1))
@@ -108,9 +151,34 @@ def fetch_followers():
                 return data
             else:
                 print("   ⚠️ Aucun pattern n'a trouvé le nombre d'abonnés")
-                # Sauvegarder un échantillon du HTML pour debug
+
+                # Sauvegarder le HTML complet pour analyse (mode debug)
+                debug_file = 'debug_instagram.html'
+                try:
+                    with open(debug_file, 'w', encoding='utf-8') as f:
+                        f.write(html_text)
+                    print(f"   💾 HTML complet sauvegardé dans {debug_file} pour analyse")
+                except:
+                    pass
+
+                # Afficher un échantillon du HTML
                 print(f"   📄 Échantillon HTML (500 premiers caractères):")
-                print(response.text[:500])
+                print(html_text[:500])
+
+                # Chercher tous les nombres qui pourraient être des abonnés
+                print("\n   🔍 Recherche de nombres suspects dans le HTML...")
+                number_matches = re.findall(r'(\d{2,8})\s*[Ff]ollowers?', html_text)
+                if number_matches:
+                    print(f"   Nombres trouvés près de 'Followers': {number_matches[:5]}")
+                    # Essayer le premier nombre trouvé
+                    try:
+                        followers = int(number_matches[0])
+                        print(f"   ⚠️ Utilisation du premier nombre trouvé: {followers}")
+                        data['followers'] = followers
+                        data['status'] = 'success_fuzzy_match'
+                        return data
+                    except:
+                        pass
 
         # Si échec
         print("\n❌ Impossible d'extraire le nombre d'abonnés")
