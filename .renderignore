@@ -1,0 +1,15 @@
+# Fichiers Python (utilisés uniquement par GitHub Actions)
+fetch_followers.py
+*.pyc
+__pycache__/
+
+# Fichiers Git
+.git/
+.github/
+
+# Documentation
+README.md
+DEPLOY.md
+
+# Fichier de données intermédiaire (on garde celui à la racine)
+fils/

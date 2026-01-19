@@ -1,5 +1,5 @@
 {
-    "timestamp": 0,
+    "timestamp": 1768739742,
     "followers": 0,
-    "status": "failed_retaining_old_data (Instaloader)"
+    "status": "failed_auth_retaining_old_data: AttributeError"
 }
