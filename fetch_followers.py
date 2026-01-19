@@ -1,16 +1,48 @@
 """
-Version simplifiée qui utilise l'API Web Instagram directement
-Au lieu d'Instaloader qui est problématique
+Version améliorée qui parse le HTML Instagram avec plusieurs patterns
 """
 import requests
 import os
 import json
 import time
+import re
 
 # Configuration
 USERNAME = os.environ.get('INSTA_USERNAME', 'merickkn')
 SESSION_ID = os.environ.get('INSTA_SESSION_ID', '')
 OUTPUT_FILE = 'fils/followers_data.json'
+
+def extract_followers_from_html(html_content):
+    """Essaie plusieurs patterns pour extraire le nombre d'abonnés"""
+
+    patterns = [
+        # Pattern 1: Format JSON classique
+        r'"edge_followed_by":\{"count":(\d+)\}',
+
+        # Pattern 2: Format alternatif
+        r'"follower_count":(\d+)',
+
+        # Pattern 3: Dans les métadonnées
+        r'"followed_by":\{"count":(\d+)\}',
+
+        # Pattern 4: Format récent Instagram
+        r'content="(\d+)\s+Followers"',
+
+        # Pattern 5: Meta tag
+        r'<meta\s+property="og:description"\s+content="[^"]*?(\d+)\s+Followers',
+
+        # Pattern 6: SharedData
+        r'"userInteractionCount":"(\d+)"',
+    ]
+
+    for i, pattern in enumerate(patterns, 1):
+        match = re.search(pattern, html_content, re.IGNORECASE)
+        if match:
+            followers = int(match.group(1))
+            print(f"   ✅ Pattern {i} a trouvé: {followers} abonnés")
+            return followers
+
+    return None
 
 def fetch_followers():
     """Récupère le nombre d'abonnés Instagram"""
@@ -32,71 +64,55 @@ def fetch_followers():
         # Headers pour simuler un navigateur
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'Accept': '*/*',
-            'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
-            'X-IG-App-ID': '936619743392459',
-            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'DNT': '1',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1',
+            'Sec-Fetch-Dest': 'document',
+            'Sec-Fetch-Mode': 'navigate',
+            'Sec-Fetch-Site': 'none',
+            'Cache-Control': 'max-age=0',
         }
 
         cookies = {
             'sessionid': SESSION_ID
         }
 
-        # Méthode 1: API Web Instagram (la plus fiable)
-        print("\n📡 Méthode 1: API Web Instagram...")
-        url = f'https://www.instagram.com/api/v1/users/web_profile_info/?username={USERNAME}'
-
-        response = requests.get(
-            url,
-            headers=headers,
-            cookies=cookies,
-            timeout=15
-        )
-
-        print(f"   Status: {response.status_code}")
-
-        if response.status_code == 200:
-            json_data = response.json()
-
-            if 'data' in json_data and 'user' in json_data['data']:
-                user = json_data['data']['user']
-                followers = user.get('edge_followed_by', {}).get('count', 0)
-
-                print(f"   ✅ Succès! Abonnés: {followers}")
-
-                data['followers'] = followers
-                data['status'] = 'success'
-                return data
-
-        # Méthode 2: Scraping de la page publique (fallback)
-        print("\n📡 Méthode 2: Scraping page publique...")
+        # Méthode 1: Scraping de la page publique
+        print("\n📡 Récupération de la page Instagram...")
         url = f'https://www.instagram.com/{USERNAME}/'
 
         response = requests.get(
             url,
             headers=headers,
             cookies=cookies,
-            timeout=15
+            timeout=15,
+            allow_redirects=True
         )
 
         print(f"   Status: {response.status_code}")
 
         if response.status_code == 200:
-            import re
+            print(f"   Taille HTML: {len(response.text)} caractères")
 
-            # Chercher le JSON embarqué dans le HTML
-            match = re.search(r'"edge_followed_by":\{"count":(\d+)\}', response.text)
+            # Essayer d'extraire avec plusieurs patterns
+            followers = extract_followers_from_html(response.text)
 
-            if match:
-                followers = int(match.group(1))
-                print(f"   ✅ Succès! Abonnés: {followers}")
-
+            if followers is not None:
+                print(f"   ✅ SUCCÈS! Abonnés: {followers}")
                 data['followers'] = followers
-                data['status'] = 'success_scraping'
+                data['status'] = 'success'
                 return data
+            else:
+                print("   ⚠️ Aucun pattern n'a trouvé le nombre d'abonnés")
+                # Sauvegarder un échantillon du HTML pour debug
+                print(f"   📄 Échantillon HTML (500 premiers caractères):")
+                print(response.text[:500])
 
-        # Si toutes les méthodes échouent
-        print("\n❌ Toutes les méthodes ont échoué")
+        # Si échec
+        print("\n❌ Impossible d'extraire le nombre d'abonnés")
 
         # Garder les anciennes données si disponibles
         try:
@@ -106,7 +122,7 @@ def fetch_followers():
                 data['status'] = f'failed_retaining_old_data (HTTP {response.status_code})'
                 print(f"   📦 Conservation des anciennes données: {data['followers']} abonnés")
         except:
-            data['status'] = f'failed_all_methods (HTTP {response.status_code})'
+            data['status'] = f'failed_extraction (HTTP {response.status_code})'
 
     except requests.exceptions.Timeout:
         print("❌ Timeout - Instagram ne répond pas")
@@ -145,7 +161,7 @@ if __name__ == "__main__":
     result = fetch_followers()
 
     print("\n" + "=" * 60)
-    if result['status'] == 'success' or result['status'] == 'success_scraping':
+    if result['status'] == 'success':
         print(f"✅ SUCCÈS! {result['followers']} abonnés")
     else:
         print(f"❌ ÉCHEC: {result['status']}")
