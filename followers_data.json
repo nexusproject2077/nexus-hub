@@ -1,5 +1,5 @@
 {
-    "timestamp": 1768862316,
+    "timestamp": 1768863024,
     "followers": 0,
-    "status": "failed_auth_retaining_old_data: ProfileNotExistsException"
+    "status": "failed_retaining_old_data (HTTP 200)"
 }
