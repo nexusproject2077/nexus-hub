@@ -61,19 +61,14 @@ def fetch_followers():
         print(f"🔍 Récupération des abonnés pour @{USERNAME}")
         print(f"📝 Session ID: {len(SESSION_ID)} caractères")
 
-        # Headers pour simuler un navigateur
+        # Headers pour simuler un navigateur (SANS Accept-Encoding pour éviter compression)
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
             'Accept-Language': 'en-US,en;q=0.9',
-            'Accept-Encoding': 'gzip, deflate, br',
             'DNT': '1',
             'Connection': 'keep-alive',
             'Upgrade-Insecure-Requests': '1',
-            'Sec-Fetch-Dest': 'document',
-            'Sec-Fetch-Mode': 'navigate',
-            'Sec-Fetch-Site': 'none',
-            'Cache-Control': 'max-age=0',
         }
 
         cookies = {
@@ -93,12 +88,18 @@ def fetch_followers():
         )
 
         print(f"   Status: {response.status_code}")
+        print(f"   Encoding détecté: {response.encoding}")
 
         if response.status_code == 200:
-            print(f"   Taille HTML: {len(response.text)} caractères")
+            # S'assurer que le contenu est bien décodé en UTF-8
+            response.encoding = response.apparent_encoding or 'utf-8'
+            html_text = response.text
+
+            print(f"   Taille HTML: {len(html_text)} caractères")
+            print(f"   Échantillon (premiers 200 caractères): {html_text[:200]}")
 
             # Essayer d'extraire avec plusieurs patterns
-            followers = extract_followers_from_html(response.text)
+            followers = extract_followers_from_html(html_text)
 
             if followers is not None:
                 print(f"   ✅ SUCCÈS! Abonnés: {followers}")
