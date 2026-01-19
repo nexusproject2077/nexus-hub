@@ -1,5 +1,5 @@
 {
-    "timestamp": 1768739742,
+    "timestamp": 1768837418,
     "followers": 0,
-    "status": "failed_auth_retaining_old_data: AttributeError"
+    "status": "failed_auth_retaining_old_data: ProfileNotExistsException"
 }
