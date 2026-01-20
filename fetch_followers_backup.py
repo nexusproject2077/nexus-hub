@@ -1,7 +1,6 @@
 """
 Version utilisant directement l'API GraphQL d'Instagram
 BEAUCOUP plus fiable que le scraping HTML
-Avec fallback manuel automatique si les APIs échouent
 """
 import requests
 import os
@@ -12,19 +11,6 @@ import time
 USERNAME = os.environ.get('INSTA_USERNAME', 'merickkn')
 SESSION_ID = os.environ.get('INSTA_SESSION_ID', '')
 OUTPUT_FILE = 'fils/followers_data.json'
-MANUAL_OVERRIDE_FILE = 'manual_followers_count.txt'
-
-def get_manual_override():
-    """Récupère le nombre manuel si défini"""
-    try:
-        if os.path.exists(MANUAL_OVERRIDE_FILE):
-            with open(MANUAL_OVERRIDE_FILE, 'r') as f:
-                count = int(f.read().strip())
-                if count > 0:
-                    return count
-    except:
-        pass
-    return None
 
 def fetch_followers():
     """Récupère le nombre d'abonnés via l'API GraphQL Instagram"""
@@ -37,22 +23,10 @@ def fetch_followers():
     }
 
     try:
-        print(f"🔍 Récupération des abonnés pour @{USERNAME}")
-
-        # Vérifier d'abord s'il y a un override manuel
-        manual_count = get_manual_override()
-        if manual_count:
-            print(f"✅ Utilisation du nombre manuel: {manual_count}")
-            print(f"   (Fichier: {MANUAL_OVERRIDE_FILE})")
-            data['followers'] = manual_count
-            data['status'] = 'success_manual_override'
-            return data
-
         if not SESSION_ID:
-            print("⚠️ SESSION_ID n'est pas configuré")
-            print(f"💡 Créez '{MANUAL_OVERRIDE_FILE}' avec votre nombre d'abonnés")
             raise ValueError("INSTA_SESSION_ID n'est pas configuré")
 
+        print(f"🔍 Récupération des abonnés pour @{USERNAME}")
         print(f"📝 Session ID: {len(SESSION_ID)} caractères")
 
         # Headers pour l'API GraphQL Instagram
@@ -214,31 +188,16 @@ def fetch_followers():
 
         # Si toutes les méthodes échouent
         print("\n❌ Toutes les méthodes API ont échoué")
-        print(f"\n💡 SOLUTION MANUELLE:")
-        print(f"   Créez/modifiez '{MANUAL_OVERRIDE_FILE}'")
-        print(f"   Écrivez juste votre nombre d'abonnés (ex: 1234)")
-        print(f"   Le script l'utilisera automatiquement aux prochaines exécutions")
 
         # Garder les anciennes données si disponibles
         try:
             with open(OUTPUT_FILE, 'r') as f:
                 old_data = json.load(f)
-                old_count = old_data.get('followers', 0)
-                if old_count > 0:
-                    data['followers'] = old_count
-                    data['status'] = 'failed_api_retaining_old_data'
-                    print(f"\n   📦 Conservation des anciennes données: {data['followers']} abonnés")
-                else:
-                    # Utiliser le fallback manuel même s'il n'a pas été détecté au début
-                    manual_count = get_manual_override()
-                    if manual_count:
-                        data['followers'] = manual_count
-                        data['status'] = 'success_manual_fallback'
-                        print(f"\n   ✅ Fallback manuel utilisé: {data['followers']} abonnés")
-                    else:
-                        data['status'] = 'failed_all_methods'
+                data['followers'] = old_data.get('followers', 0)
+                data['status'] = 'failed_api_retaining_old_data'
+                print(f"   📦 Conservation des anciennes données: {data['followers']} abonnés")
         except:
-            data['status'] = 'failed_all_methods'
+            data['status'] = 'failed_all_api_methods'
 
     except requests.exceptions.Timeout:
         print("❌ Timeout - Instagram ne répond pas")
@@ -281,10 +240,6 @@ if __name__ == "__main__":
     print("\n" + "=" * 60)
     if 'success' in result['status']:
         print(f"✅ SUCCÈS! {result['followers']} abonnés")
-        if result['status'] == 'success_manual_override' or result['status'] == 'success_manual_fallback':
-            print(f"   (Source: Fichier manuel {MANUAL_OVERRIDE_FILE})")
     else:
-        print(f"⚠️ APIs échouées: {result['status']}")
-        print(f"   Abonnés affichés: {result['followers']}")
-        print(f"\n💡 Pour mettre à jour: Éditez '{MANUAL_OVERRIDE_FILE}'")
+        print(f"❌ ÉCHEC: {result['status']}")
     print("=" * 60)
