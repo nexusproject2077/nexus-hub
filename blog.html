@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - NEXUS HUB</title>
+
+    <link rel="manifest" href="./manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="./icon-192.jpg">
+
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+    <link rel="icon" type="image/png" href="./favicon.png">
+    <link rel="shortcut icon" type="image/png" href="./favicon.png">
+
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+    <style>
+        :root {
+            --bg-dark: #1a1a2e;
+            --primary-glow: #00f0ff;
+            --secondary-glow: #e900ff;
+            --text-light: #e0e0e0;
+            --text-muted: #888;
+            --border-dark: #3a3a4c;
+            --card-bg: rgba(25, 25, 40, 0.7);
+            --gradient-1: linear-gradient(45deg, var(--primary-glow), var(--secondary-glow));
+            --card-hover-bg: rgba(35, 35, 60, 0.9);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.8;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .background-animation {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at top left, rgba(0, 240, 255, 0.1), transparent 30%),
+                        radial-gradient(circle at bottom right, rgba(233, 0, 255, 0.1), transparent 30%);
+            opacity: 0.3; animation: bg-fade-in 2s ease-out forwards; z-index: -1;
+        }
+
+        @keyframes bg-fade-in {
+            from { opacity: 0; transform: scale(1.1); }
+            to { opacity: 0.3; transform: scale(1); }
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        #system-time {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2em;
+            color: var(--primary-glow);
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(0, 240, 255, 1), 0 0 25px rgba(0, 240, 255, 0.5);
+            letter-spacing: 5px;
+        }
+
+        header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3em;
+            margin-bottom: 10px;
+            letter-spacing: 5px;
+            text-shadow: 0 0 15px var(--primary-glow), 0 0 25px var(--secondary-glow);
+            animation: neon-pulse 1.5s infinite alternate ease-in-out;
+        }
+
+        .gradient-text {
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            color: var(--text-muted);
+            text-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
+        }
+
+        @keyframes neon-pulse {
+            from { text-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--secondary-glow); }
+            to { text-shadow: 0 0 15px var(--primary-glow), 0 0 30px var(--secondary-glow), 0 0 40px rgba(233, 0, 255, 0.4); }
+        }
+
+        .back-button-container {
+            margin-top: 25px;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 12px 25px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1em;
+            text-decoration: none;
+            color: var(--text-light);
+            background-color: var(--card-bg);
+            border: 2px solid var(--primary-glow);
+            border-radius: 8px;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+            letter-spacing: 2px;
+        }
+
+        .back-button:hover {
+            color: var(--bg-dark);
+            background: var(--gradient-1);
+            border-color: var(--secondary-glow);
+            box-shadow: 0 0 25px var(--primary-glow), 0 0 40px var(--secondary-glow);
+            transform: scale(1.05);
+        }
+
+        .back-button i {
+            margin-right: 10px;
+        }
+
+        main {
+            flex: 1;
+            max-width: 900px;
+            width: 90%;
+            margin: 20px auto 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .blog-article {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-dark);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.4), inset 0 0 5px rgba(255, 255, 255, 0.05);
+        }
+
+        .article-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px dashed rgba(0, 240, 255, 0.3);
+        }
+
+        .article-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8em;
+            color: var(--primary-glow);
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .article-meta {
+            color: var(--text-muted);
+            font-size: 0.9em;
+        }
+
+        .article-meta i {
+            color: var(--secondary-glow);
+            margin-right: 8px;
+        }
+
+        .article-intro {
+            font-size: 1.1em;
+            color: var(--text-light);
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 240, 255, 0.05);
+            border-left: 3px solid var(--primary-glow);
+            border-radius: 0 10px 10px 0;
+        }
+
+        .article-section {
+            margin-bottom: 35px;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4em;
+            color: var(--secondary-glow);
+            margin-bottom: 20px;
+            text-shadow: 0 0 8px rgba(233, 0, 255, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title .emoji {
+            font-size: 1.2em;
+        }
+
+        .article-content p {
+            margin-bottom: 18px;
+            text-align: justify;
+            color: var(--text-light);
+        }
+
+        .highlight {
+            color: var(--primary-glow);
+            font-weight: bold;
+        }
+
+        .quote-block {
+            margin: 25px 0;
+            padding: 20px 25px;
+            background: rgba(233, 0, 255, 0.08);
+            border-left: 4px solid var(--secondary-glow);
+            border-radius: 0 10px 10px 0;
+            font-style: italic;
+            color: var(--text-light);
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: var(--bg-dark);
+            border-top: 1px solid var(--border-dark);
+            margin-top: auto;
+            color: var(--text-muted);
+            font-size: 0.9em;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 2em; }
+            #system-time { font-size: 1.5em; letter-spacing: 3px; }
+            .article-title { font-size: 1.4em; }
+            .section-title { font-size: 1.2em; }
+            .blog-article { padding: 25px 20px; }
+        }
+
+        @media (max-width: 480px) {
+            header h1 { font-size: 1.6em; }
+            .article-title { font-size: 1.2em; }
+            .back-button { padding: 10px 18px; font-size: 0.9em; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background-animation"></div>
+
+    <header>
+        <p id="system-time">00:00:00</p>
+
+        <h1><span class="gradient-text">BLOG</span></h1>
+        <p class="subtitle">Pensees et Explorations</p>
+
+        <div class="back-button-container">
+            <a href="index.html" class="back-button">
+                <i class="fas fa-home"></i> Retour a l'Accueil
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <article class="blog-article">
+            <div class="article-header">
+                <h2 class="article-title">De la France a Tampa : L'Ambition d'un Jeune Entrepreneur Franco-Turc</h2>
+                <p class="article-meta">
+                    <i class="fas fa-user"></i> Meric Koken
+                    <span style="margin: 0 15px;">|</span>
+                    <i class="fas fa-calendar-alt"></i> 2025
+                </p>
+            </div>
+
+            <div class="article-intro">
+                Bonjour a tous ! Je m'appelle <span class="highlight">Meric Koken</span>, je suis Franco-Turc et, a 19 ans (je suis ne le 8 juillet 2006), j'ai deja un plan de vie bien defini qui m'emmenera bien loin de ma ville actuelle, Les Noes-pres-Troyes. Mon objectif ? M'installer a <span class="highlight">Tampa, en Floride</span>, et batir un avenir dans l'immobilier ou encore de devenir acteur de Hollywood.
+            </div>
+
+            <section class="article-section">
+                <h3 class="section-title"><span class="emoji">☀️</span> Tampa, la ville de la modernite et des opportunites</h3>
+                <div class="article-content">
+                    <p>Mon reve americain a un nom precis : <span class="highlight">Tampa</span>. Quand on pense a la Floride, beaucoup imaginent Miami, mais c'est bien la modernite et le dynamisme de Tampa qui m'attirent le plus. La ville est en pleine croissance, offrant un environnement ideal pour investir.</p>
+
+                    <p>De plus, etre proche de Miami est un avantage majeur. Cette proximite donne acces a un hub economique et culturel sans pour autant subir l'agitation constante du "Magic City". C'est un equilibre parfait entre croissance professionnelle et qualite de vie.</p>
+
+                    <div class="quote-block">
+                        Mon objectif immobilier est clair : j'envisage d'acheter des appartements ou des maisons dans la region. Pour y arriver, je mise sur le travail acharne. Je suis pret a m'investir totalement pour mettre en place les fondations de ce projet transatlantique.
+                    </div>
+                </div>
+            </section>
+
+            <section class="article-section">
+                <h3 class="section-title"><span class="emoji">🇹🇷🇫🇷</span> Entre deux cultures : L'identite Franco-Turque</h3>
+                <div class="article-content">
+                    <p>Mon identite est tissee de deux fils solides : la <span class="highlight">France</span> et la <span class="highlight">Turquie</span>. Cette double culture est une richesse incroyable qui forge ma personnalite et ma maniere de voir le monde.</p>
+
+                    <p>Cependant, vivre avec cette double appartenance n'est pas toujours simple. C'est un melange quotidien entre le racisme auquel on peut faire face et le respect que la communaute turque a su batir. Je suis fier de mon heritage et de mon parcours, mais il faut naviguer entre ces realites contrastees.</p>
+
+                    <div class="quote-block">
+                        Concernant les traditions, je les considere toutes comme importantes. Qu'elles soient francaises ou turques, elles constituent le socle de mon education et de mes valeurs. Je ne privilegie pas l'une sur l'autre ; je suis la somme de ces deux mondes, et c'est cette richesse qui me donnera la force de reussir aux Etats-Unis.
+                    </div>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <footer>
+        <p><span class="gradient-text">Nexus-Hub</span> par Meric &copy; 2026</p>
+    </footer>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('fr-FR', { hour12: false });
+            document.getElementById('system-time').textContent = timeString;
+        }
+        updateTime();
+        setInterval(updateTime, 1000);
+    </script>
+
+</body>
+</html>
