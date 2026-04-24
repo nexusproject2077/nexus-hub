@@ -1,90 +1,345 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Archive | Terminal</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> 
-    
-    <style>
-        /* Styles de base réutilisés du site principal */
-        :root {
-            --bg-dark: #1a1a2e;
-            --primary-glow: #00f0ff;
-            --secondary-glow: #e900ff;
-            --text-light: #e0e0e0;
-            --text-muted: #888;
-            --card-bg: rgba(25, 25, 40, 0.7);
-            --gradient-1: linear-gradient(45deg, var(--primary-glow), var(--secondary-glow));
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Share Tech Mono', monospace;
-            background-color: var(--bg-dark);
-            color: var(--text-light);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 50px 20px;
-        }
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NEXUS HUB | Archive</title>
+<link href="./manifest.json" rel="manifest"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+  :root { --obsidian: #0a0a0c; --border: #2a2a2a; --accent: #6366f1; }
+  *, *::before, *::after { box-sizing: border-box; }
 
-        .archive-container { width: 100%; max-width: 900px; margin-top: 50px; }
-        .archive-header { text-align: center; margin-bottom: 40px; border-bottom: 2px solid var(--primary-glow); padding-bottom: 20px; }
-        .archive-header h1 { font-family: 'Orbitron', sans-serif; color: var(--primary-glow); font-size: 2.5em; text-shadow: 0 0 10px var(--primary-glow); }
-        .archive-header p { color: var(--text-muted); margin-top: 10px; }
-        .nav-links { display: flex; flex-direction: column; gap: 20px; }
+  body {
+    background-color: var(--obsidian);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    cursor: none;
+  }
 
-        .nav-card {
-            display: block; padding: 30px; background-color: var(--card-bg); border: 1px solid var(--secondary-glow);
-            border-left: 5px solid var(--secondary-glow); border-radius: 5px; text-decoration: none;
-            color: var(--text-light); transition: all 0.3s ease; box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            position: relative; overflow: hidden;
-        }
-        .nav-card:hover {
-            background-color: rgba(35, 35, 60, 0.9); transform: translateX(10px); border-color: var(--primary-glow);
-            border-left-color: var(--primary-glow); box-shadow: 0 0 20px rgba(233, 0, 255, 0.5);
-        }
-        .nav-card:before {
-            content: '>'; position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
-            color: var(--primary-glow); font-size: 1.5em; opacity: 0.8;
-        }
-        .nav-card h2 { font-family: 'Orbitron', sans-serif; font-size: 1.5em; margin-left: 20px; color: var(--primary-glow); }
-        .nav-card p { margin-top: 5px; margin-left: 20px; color: var(--text-muted); }
-        .back-link { margin-top: 40px; color: var(--secondary-glow); text-decoration: none; font-size: 1.1em; transition: color 0.3s; }
-        .back-link:hover { color: var(--primary-glow); }
+  .c-dot {
+    position: fixed; top: 0; left: 0; width: 6px; height: 6px;
+    background: #fff; border-radius: 50%; pointer-events: none;
+    z-index: 9999; transform: translate(-50%,-50%);
+  }
+  .c-ring {
+    position: fixed; top: 0; left: 0; width: 32px; height: 32px;
+    border: 1px solid rgba(255,255,255,.25); border-radius: 50%;
+    pointer-events: none; z-index: 9998; transform: translate(-50%,-50%);
+    transition: width .2s, height .2s, border-color .2s;
+  }
+  .c-ring.big { width: 52px; height: 52px; border-color: rgba(99,102,241,.6); }
 
-        @media (max-width: 600px) {
-            .archive-header h1 { font-size: 1.8em; }
-            .nav-card { padding: 20px; }
-            .nav-card h2 { font-size: 1.2em; }
-        }
-    </style>
+  #bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+  #spotlight {
+    position: fixed; inset: 0; z-index: 1; pointer-events: none;
+    background: radial-gradient(650px circle at var(--mx,50%) var(--my,50%),
+      rgba(99,102,241,.05), transparent 60%);
+  }
+  .scanlines {
+    position: fixed; inset: 0; z-index: 2; pointer-events: none;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px,
+      rgba(0,0,0,.04) 2px, rgba(0,0,0,.04) 4px);
+  }
+  .wrap { position: relative; z-index: 3; }
+  .mono { font-family: 'Share Tech Mono', monospace; }
+
+  .glitch { position: relative; display: inline-block; }
+  .glitch::before, .glitch::after {
+    content: attr(data-text); position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%; opacity: 0;
+  }
+  .glitch::before { color: #f0f; animation: gb 7s infinite; }
+  .glitch::after  { color: #0ff; animation: ga 7s infinite; }
+  @keyframes gb {
+    0%,88%,100% { opacity:0; transform:translate(0); }
+    90% { opacity:.7; transform:translate(-2px,1px); clip-path:polygon(0 0,100% 0,100% 35%,0 35%); }
+    92% { opacity:0; }
+    94% { opacity:.5; transform:translate(2px,-1px); clip-path:polygon(0 65%,100% 65%,100% 80%,0 80%); }
+    96% { opacity:0; }
+  }
+  @keyframes ga {
+    0%,89%,100% { opacity:0; transform:translate(0); }
+    91% { opacity:.6; transform:translate(2px,-1px); clip-path:polygon(0 40%,100% 40%,100% 60%,0 60%); }
+    93% { opacity:0; }
+    95% { opacity:.5; transform:translate(-2px,1px); clip-path:polygon(0 20%,100% 20%,100% 40%,0 40%); }
+    97% { opacity:0; }
+  }
+
+  @property --ang { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+
+  .archive-card {
+    position: relative;
+    border: 1px solid var(--border);
+    background: rgba(10,10,12,.85);
+    border-radius: .5rem;
+    transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+    overflow: hidden;
+    text-decoration: none;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.75rem 2rem;
+  }
+  .archive-card::after {
+    content: '';
+    position: absolute; inset: -1px;
+    border-radius: inherit;
+    background: conic-gradient(from var(--ang), transparent 70%,
+      rgba(99,102,241,.6) 80%, rgba(139,92,246,.6) 90%, transparent);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    padding: 1px;
+    opacity: 0;
+    transition: opacity .3s;
+    animation: spin-border 3s linear infinite paused;
+  }
+  .archive-card:hover {
+    border-color: transparent;
+    transform: translateX(6px);
+    box-shadow: 0 0 30px rgba(99,102,241,.08), 0 20px 40px rgba(0,0,0,.5);
+  }
+  .archive-card:hover::after { opacity:1; animation-play-state: running; }
+  @keyframes spin-border { to { --ang: 360deg; } }
+
+  .archive-card:hover .card-icon {
+    color: #a5b4fc;
+    filter: drop-shadow(0 0 8px rgba(99,102,241,.6));
+    transform: scale(1.15);
+  }
+  .card-icon { transition: color .3s, filter .3s, transform .3s; font-size: 1.25rem; }
+
+  .card-num {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: .65rem;
+    color: #333;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+  }
+
+  .insta-pill { transition: background .2s, transform .2s; }
+  .insta-pill:hover { background: rgba(30,30,32,1); transform: scale(1.03); }
+
+  .back-link {
+    display: inline-flex; align-items: center; gap: .5rem;
+    color: #444; font-size: .7rem; text-decoration: none;
+    font-family: 'Share Tech Mono', monospace;
+    text-transform: uppercase; letter-spacing: .15em;
+    transition: color .2s ease;
+  }
+  .back-link:hover { color: #a5b4fc; }
+
+  .pulse { animation: pulse 2.5s ease infinite; }
+  @keyframes pulse {
+    0%,100% { opacity:1; box-shadow: 0 0 0 0 rgba(52,211,153,.4); }
+    50%      { opacity:.5; box-shadow: 0 0 0 4px rgba(52,211,153,0); }
+  }
+
+  .fade-up { opacity:0; transform:translateY(24px); animation: fadeup .7s ease forwards; }
+  @keyframes fadeup { to { opacity:1; transform:translateY(0); } }
+  .d1{animation-delay:.05s} .d2{animation-delay:.15s} .d3{animation-delay:.28s}
+  .d4{animation-delay:.42s} .d5{animation-delay:.56s} .d6{animation-delay:.70s}
+
+  #system-time { font-variant-numeric: tabular-nums; }
+
+  .ticker-wrap { overflow: hidden; border-top: 1px solid #111; border-bottom: 1px solid #111; }
+  .ticker-track {
+    display: flex; gap: 4rem; white-space: nowrap;
+    animation: ticker 22s linear infinite;
+  }
+  @keyframes ticker { from { transform:translateX(0); } to { transform:translateX(-50%); } }
+
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: var(--obsidian); }
+  ::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 2px; }
+
+  @media (hover: none) { body { cursor: auto; } .c-dot, .c-ring { display: none; } }
+</style>
 </head>
-<body>
-    <div class="archive-container">
-        <div class="archive-header">
-            <h1>TERMINAL D'ARCHIVE</h1>
-            <p>Veuillez sélectionner un répertoire d'accès.</p>
-        </div>
+<body class="flex flex-col items-center min-h-screen">
 
-        <nav class="nav-links">
-            <a href="projets.html" class="nav-card">
-                <h2>RÉPERTOIRE 01 : PROJETS</h2>
-                <p>Analyse des modules et des réalisations passées (Code Source, Études de Cas).</p>
-            </a>
-            <a href="competences.html" class="nav-card">
-                <h2>RÉPERTOIRE 02 : COMPÉTENCES</h2>
-                <p>Matrice des langages et des protocoles maîtrisés (Stacks Techniques, Frameworks).</p>
-            </a>
-            <a href="cv.html" class="nav-card">
-                <h2>RÉPERTOIRE 03 : MISSIONS ET CV</h2>
-                <p>Journal de bord des expériences professionnelles et téléchargement du CV (Rapports, Historique).</p>
-            </a>
-        </nav>
-        <a href="index.html" class="back-link">← Retour au Nexus Principal</a>
+<canvas id="bg"></canvas>
+<div id="spotlight"></div>
+<div class="scanlines"></div>
+<div class="c-dot" id="cdot"></div>
+<div class="c-ring" id="cring"></div>
+
+<div class="wrap w-full flex flex-col items-center">
+
+  <!-- Header -->
+  <header class="w-full max-w-6xl px-6 py-8 flex justify-between items-center fade-up d1">
+    <div class="flex items-center gap-4">
+      <a href="index.html">
+        <h1 class="text-xl font-bold tracking-tight glitch" data-text="NEXUS HUB">
+          NEXUS <span class="font-light text-zinc-500">HUB</span>
+        </h1>
+      </a>
+      <div class="hidden md:block h-4 w-px bg-[#222]"></div>
+      <span class="hidden md:block text-[10px] text-zinc-600 mono uppercase tracking-widest" id="system-time">00:00:00</span>
     </div>
+    <a class="insta-pill flex items-center gap-3 px-3 py-1.5 rounded-full border border-[#222]"
+       href="https://www.instagram.com/merickn/" target="_blank">
+      <div class="text-right">
+        <p class="text-[10px] font-semibold leading-none text-white">@merickn</p>
+        <p class="text-[9px] text-zinc-500 leading-none mt-0.5">1 234 abonnés</p>
+      </div>
+      <img alt="Profile" class="w-6 h-6 rounded-full object-cover"
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDr64yMXYw0xB7ANsOhknluhk80IuEfnWigXyg7LOUsjqVpCyLkTeXxP28mRuN4uEoqfkrD5A_1vB0qQx3e5gOVPNR0nfBUlECHeN2m-Al1h_YKfWTs-MvgP2usQWCENZDxjBFnWXNaVc3DQG6VPh_7RGWFwGXr2nqTpwLorGOxDBwVRTMmpQVWtSHq9hDBjERH7FDvwJVF4TtAsp7B--SwIowDYhEIeV8NLu3ok10J8D2zTa9bfBOY9zmz0LC9Nd9YS6HD-s4G82a_"/>
+    </a>
+  </header>
+
+  <!-- Ticker -->
+  <div class="ticker-wrap w-full py-2 fade-up d2">
+    <div class="ticker-track mono text-[9px] uppercase tracking-widest text-zinc-700">
+      <span>NEXUS ARCHIVE</span><span>◆</span><span>Terminal d'accès</span><span>◆</span>
+      <span>Projets</span><span>◆</span><span>Compétences</span><span>◆</span>
+      <span>CV</span><span>◆</span><span>2026</span><span>◆</span>
+      <span>NEXUS ARCHIVE</span><span>◆</span><span>Terminal d'accès</span><span>◆</span>
+      <span>Projets</span><span>◆</span><span>Compétences</span><span>◆</span>
+      <span>CV</span><span>◆</span><span>2026</span><span>◆</span>
+    </div>
+  </div>
+
+  <main class="w-full max-w-4xl px-6 py-16 space-y-12">
+
+    <!-- Page title -->
+    <section class="space-y-3 fade-up d2">
+      <p class="mono text-[10px] uppercase tracking-widest text-zinc-600">Terminal d'accès</p>
+      <h2 class="text-3xl md:text-4xl font-bold tracking-tight">Archive</h2>
+      <p class="text-zinc-500 text-sm font-light">Sélectionnez un répertoire.</p>
+    </section>
+
+    <!-- Cards -->
+    <nav class="flex flex-col gap-4">
+
+      <a href="projets.html" class="archive-card fade-up d3">
+        <i class="fas fa-code card-icon text-zinc-500"></i>
+        <div class="flex-1">
+          <p class="card-num mb-1">Répertoire 01</p>
+          <h3 class="text-sm font-semibold mb-1">Projets</h3>
+          <p class="text-zinc-600 text-[11px] leading-relaxed">Analyse des modules et réalisations — code source, études de cas.</p>
+        </div>
+        <i class="fas fa-arrow-right text-zinc-700 text-xs"></i>
+      </a>
+
+      <a href="competences.html" class="archive-card fade-up d4">
+        <i class="fas fa-layer-group card-icon text-zinc-500"></i>
+        <div class="flex-1">
+          <p class="card-num mb-1">Répertoire 02</p>
+          <h3 class="text-sm font-semibold mb-1">Compétences</h3>
+          <p class="text-zinc-600 text-[11px] leading-relaxed">Matrice des langages et protocoles maîtrisés — stacks, frameworks.</p>
+        </div>
+        <i class="fas fa-arrow-right text-zinc-700 text-xs"></i>
+      </a>
+
+      <a href="cv.html" class="archive-card fade-up d5">
+        <i class="fas fa-file-alt card-icon text-zinc-500"></i>
+        <div class="flex-1">
+          <p class="card-num mb-1">Répertoire 03</p>
+          <h3 class="text-sm font-semibold mb-1">Missions & CV</h3>
+          <p class="text-zinc-600 text-[11px] leading-relaxed">Journal de bord des expériences professionnelles et téléchargement du CV.</p>
+        </div>
+        <i class="fas fa-arrow-right text-zinc-700 text-xs"></i>
+      </a>
+
+    </nav>
+
+    <!-- Back -->
+    <div class="fade-up d6">
+      <a href="index.html" class="back-link">
+        <i class="fas fa-arrow-left text-[10px]"></i> Retour au hub
+      </a>
+    </div>
+
+  </main>
+
+  <footer class="w-full max-w-6xl px-6 py-10 mt-4 border-t border-[#111] flex flex-col md:flex-row justify-between items-center gap-6 fade-up d6">
+    <p class="text-[10px] tracking-[.2em] text-zinc-600 uppercase">
+      Nexus-Hub <span class="text-zinc-800 px-2">|</span> 2026
+    </p>
+    <div class="flex gap-8 text-[9px] mono uppercase tracking-widest text-zinc-700">
+      <span class="flex items-center gap-2">
+        <span class="w-1.5 h-1.5 bg-emerald-600 rounded-full pulse inline-block"></span>
+        Core Stable
+      </span>
+      <span>Uptime 99.9%</span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+function tick() {
+  document.getElementById('system-time').textContent =
+    new Date().toLocaleTimeString('fr-FR', { hour12: false });
+}
+setInterval(tick, 1000); tick();
+
+const dot = document.getElementById('cdot');
+const ring = document.getElementById('cring');
+let mx = innerWidth/2, my = innerHeight/2, rx = mx, ry = my;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+  document.getElementById('spotlight').style.setProperty('--mx', mx + 'px');
+  document.getElementById('spotlight').style.setProperty('--my', my + 'px');
+});
+(function lr() {
+  rx += (mx-rx)*.1; ry += (my-ry)*.1;
+  ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+  requestAnimationFrame(lr);
+})();
+document.querySelectorAll('a,button').forEach(el => {
+  el.addEventListener('mouseenter', () => ring.classList.add('big'));
+  el.addEventListener('mouseleave', () => ring.classList.remove('big'));
+});
+
+const cv = document.getElementById('bg');
+const cx = cv.getContext('2d');
+let W, H, pts = [];
+function resize() { W = cv.width = innerWidth; H = cv.height = innerHeight; }
+window.addEventListener('resize', resize); resize();
+class P {
+  constructor() { this.init(); }
+  init() {
+    this.x=(Math.random()*W); this.y=(Math.random()*H);
+    this.vx=(Math.random()-.5)*.25; this.vy=(Math.random()-.5)*.25;
+    this.r=Math.random()*1.2+.4; this.a=Math.random()*.35+.08;
+  }
+  step() { this.x+=this.vx; this.y+=this.vy; if(this.x<0||this.x>W||this.y<0||this.y>H)this.init(); }
+  draw() { cx.beginPath(); cx.arc(this.x,this.y,this.r,0,Math.PI*2); cx.fillStyle=`rgba(180,180,255,${this.a})`; cx.fill(); }
+}
+for(let i=0;i<90;i++) pts.push(new P());
+(function frame() {
+  cx.clearRect(0,0,W,H);
+  for(let i=0;i<pts.length;i++){
+    pts[i].step(); pts[i].draw();
+    for(let j=i+1;j<pts.length;j++){
+      const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y, d=Math.sqrt(dx*dx+dy*dy);
+      if(d<110){ cx.beginPath(); cx.moveTo(pts[i].x,pts[i].y); cx.lineTo(pts[j].x,pts[j].y);
+        cx.strokeStyle=`rgba(99,102,241,${.12*(1-d/110)})`; cx.lineWidth=.5; cx.stroke(); }
+    }
+  }
+  requestAnimationFrame(frame);
+})();
+
+document.querySelectorAll('.archive-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX-r.left)/r.width-.5;
+    const y = (e.clientY-r.top)/r.height-.5;
+    card.style.transform = `perspective(700px) rotateX(${-y*4}deg) rotateY(${x*4}deg) translateX(6px)`;
+  });
+  card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+});
+</script>
 </body>
 </html>
