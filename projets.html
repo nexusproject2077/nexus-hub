@@ -1,30 +1,308 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Archive | Projets</title>
-    <style>
-        body { background-color: #1a1a2e; color: #e0e0e0; font-family: 'Share Tech Mono', monospace; padding: 50px; }
-        h1 { color: #00f0ff; margin-bottom: 20px; }
-        h2 { color: #e900ff; margin-top: 30px; }
-        p { margin-bottom: 10px; line-height: 1.4; }
-        a { color: #e900ff; text-decoration: none; }
-        a:hover { color: #00f0ff; }
-        hr { border: 0; border-top: 1px dashed #3a3a4c; margin: 30px 0; }
-    </style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NEXUS HUB | Projets</title>
+<link href="./manifest.json" rel="manifest"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="nexus-base.css" rel="stylesheet"/>
+<style>
+  .project-card {
+    display: flex; flex-direction: column;
+    transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+  }
+  .project-card:hover { transform: translateY(-4px); }
+
+  .status-live    { color: #34d399; background: rgba(52,211,153,.08); border-color: rgba(52,211,153,.2); }
+  .status-dev     { color: #fbbf24; background: rgba(251,191,36,.08);  border-color: rgba(251,191,36,.2); }
+  .status-archive { color: #6b7280; background: rgba(107,114,128,.08); border-color: rgba(107,114,128,.2); }
+
+  .filter-btn {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: .65rem; text-transform: uppercase; letter-spacing: .15em;
+    padding: .35rem .85rem; border-radius: .25rem;
+    border: 1px solid #2a2a2a; color: #555;
+    background: transparent; cursor: none;
+    transition: border-color .2s, color .2s, background .2s;
+  }
+  .filter-btn:hover, .filter-btn.active {
+    border-color: rgba(99,102,241,.5);
+    color: #a5b4fc;
+    background: rgba(99,102,241,.06);
+  }
+
+  .tech-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: .6rem; letter-spacing: .08em;
+    padding: .2rem .5rem; border-radius: .25rem;
+    border: 1px solid #222; color: #555;
+    background: rgba(255,255,255,.02);
+  }
+
+  .project-card .ext-icon {
+    opacity: 0; transform: translateX(-4px);
+    transition: opacity .2s, transform .2s;
+  }
+  .project-card:hover .ext-icon {
+    opacity: 1; transform: translateX(0);
+  }
+</style>
 </head>
-<body>
-    <h1>:: RÉPERTOIRE PROJETS ::</h1>
-    <p>Ce terminal est prêt à accueillir la documentation détaillée de vos modules. Chaque module sera une entrée dans cette base de données.</p>
-    
-    <h2>ENTRÉE MODULE 1 : [Nom du Projet 1]</h2>
-    <p>Technologie : [Ex: React, Node.js] - Problématique : [Détail] - <a href="Lien_GitHub">Source Code</a></p>
-    
-    <h2>ENTRÉE MODULE 2 : [Nom du Projet 2]</h2>
-    <p>Technologie : [Ex: Python, Django] - Problématique : [Détail] - <a href="Lien_GitHub">Source Code</a></p>
-    
-    <hr>
-    <a href="archive.html">← Retour à l'Archive</a>
+<body class="flex flex-col items-center">
+
+<canvas id="bg"></canvas>
+<div id="spotlight"></div>
+<div class="scanlines"></div>
+<div class="c-dot" id="cdot"></div>
+<div class="c-ring" id="cring"></div>
+<a href="#" id="scroll-top"><i class="fas fa-arrow-up"></i></a>
+
+<div class="wrap w-full flex flex-col items-center">
+
+  <!-- Header -->
+  <header class="w-full max-w-6xl px-6 py-8 flex justify-between items-center fade-up d1">
+    <div class="flex items-center gap-4">
+      <a href="index.html">
+        <h1 class="text-xl font-bold tracking-tight glitch" data-text="NEXUS HUB">
+          NEXUS <span class="font-light text-zinc-500">HUB</span>
+        </h1>
+      </a>
+      <div class="hidden md:block h-4 w-px bg-[#222]"></div>
+      <span class="hidden md:block text-[10px] text-zinc-600 mono uppercase tracking-widest" id="system-time">00:00:00</span>
+    </div>
+    <a class="insta-pill flex items-center gap-3 px-3 py-1.5 rounded-full border border-[#222]"
+       href="https://www.instagram.com/merickn/" target="_blank">
+      <div class="text-right">
+        <p class="text-[10px] font-semibold leading-none text-white">@merickn</p>
+        <p class="text-[9px] text-zinc-500 leading-none mt-0.5">1 234 abonnés</p>
+      </div>
+      <img alt="Profile" class="w-6 h-6 rounded-full object-cover"
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDr64yMXYw0xB7ANsOhknluhk80IuEfnWigXyg7LOUsjqVpCyLkTeXxP28mRuN4uEoqfkrD5A_1vB0qQx3e5gOVPNR0nfBUlECHeN2m-Al1h_YKfWTs-MvgP2usQWCENZDxjBFnWXNaVc3DQG6VPh_7RGWFwGXr2nqTpwLorGOxDBwVRTMmpQVWtSHq9hDBjERH7FDvwJVF4TtAsp7B--SwIowDYhEIeV8NLu3ok10J8D2zTa9bfBOY9zmz0LC9Nd9YS6HD-s4G82a_"/>
+    </a>
+  </header>
+
+  <!-- Ticker -->
+  <div class="ticker-wrap w-full py-2 fade-up d2">
+    <div class="ticker-track mono text-[9px] uppercase tracking-widest text-zinc-700">
+      <span>NEXUS PROJETS</span><span>◆</span><span>5 Modules</span><span>◆</span>
+      <span>Nexus Social</span><span>◆</span><span>Nexus AI</span><span>◆</span>
+      <span>Nexus Calculator</span><span>◆</span><span>Full-Stack</span><span>◆</span>
+      <span>NEXUS PROJETS</span><span>◆</span><span>5 Modules</span><span>◆</span>
+      <span>Nexus Social</span><span>◆</span><span>Nexus AI</span><span>◆</span>
+      <span>Nexus Calculator</span><span>◆</span><span>Full-Stack</span><span>◆</span>
+    </div>
+  </div>
+
+  <main class="w-full max-w-5xl px-6 py-16 space-y-12">
+
+    <!-- Page header -->
+    <section class="flex flex-col md:flex-row md:items-end justify-between gap-6 fade-up d2">
+      <div class="space-y-2">
+        <p class="mono text-[10px] uppercase tracking-widest text-zinc-600">Répertoire 01</p>
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tight">Projets</h2>
+        <p class="text-zinc-500 text-sm font-light">Modules actifs et expérimentaux.</p>
+      </div>
+      <!-- Filters -->
+      <div class="flex gap-2 flex-wrap">
+        <button class="filter-btn active" data-filter="all">Tout</button>
+        <button class="filter-btn" data-filter="live">Live</button>
+        <button class="filter-btn" data-filter="dev">En dev</button>
+        <button class="filter-btn" data-filter="archive">Archive</button>
+      </div>
+    </section>
+
+    <!-- Search -->
+    <section class="max-w-md fade-up d3">
+      <div class="relative">
+        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-zinc-600 text-xs z-10"></i>
+        <input class="w-full py-3 pl-10 pr-6 bg-transparent border border-[#222] rounded-md text-xs tracking-wide text-white relative z-10"
+               id="searchInput" placeholder="Rechercher un projet… (ou appuyer sur /)" type="text"/>
+        <div class="search-glow"></div>
+      </div>
+    </section>
+
+    <!-- Projects grid -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-5 fade-up d4" id="projects-grid">
+
+      <!-- Nexus Social -->
+      <a class="nexus-card tilt-card project-card p-6 gap-5" data-status="live" data-tags="nexus social réseau php mysql js"
+         href="https://nexus-social-3ta5.onrender.com/" target="_blank">
+        <div class="flex items-start justify-between">
+          <div class="flex items-center gap-3">
+            <i class="fas fa-users card-icon text-zinc-500 text-lg"></i>
+            <div>
+              <h3 class="text-sm font-semibold">Nexus Social</h3>
+              <span class="status-live text-[9px] mono uppercase tracking-wider px-1.5 py-0.5 rounded border">Live</span>
+            </div>
+          </div>
+          <i class="fas fa-arrow-up-right-from-square ext-icon text-zinc-600 text-xs"></i>
+        </div>
+        <p class="text-zinc-500 text-[11px] leading-relaxed flex-1">
+          Réseau social complet — authentification, messagerie temps réel, commentaires, gamification. Optimisé mobile & desktop.
+        </p>
+        <div class="flex flex-wrap gap-1.5 mt-auto pt-4 border-t border-[#1a1a1a]">
+          <span class="tech-tag">PHP</span>
+          <span class="tech-tag">MySQL</span>
+          <span class="tech-tag">JavaScript</span>
+          <span class="tech-tag">WebSocket</span>
+        </div>
+      </a>
+
+      <!-- Nexus AI -->
+      <a class="nexus-card tilt-card project-card p-6 gap-5" data-status="live" data-tags="nexus ai assistant intelligence artificielle"
+         href="https://nexusproject2077.github.io/93003/" target="_blank">
+        <div class="flex items-start justify-between">
+          <div class="flex items-center gap-3">
+            <i class="fas fa-brain card-icon text-zinc-500 text-lg"></i>
+            <div>
+              <h3 class="text-sm font-semibold">Nexus AI</h3>
+              <span class="status-live text-[9px] mono uppercase tracking-wider px-1.5 py-0.5 rounded border">Live</span>
+            </div>
+          </div>
+          <i class="fas fa-arrow-up-right-from-square ext-icon text-zinc-600 text-xs"></i>
+        </div>
+        <p class="text-zinc-500 text-[11px] leading-relaxed flex-1">
+          Assistant IA intégré à l'écosystème Nexus. Interface conversationnelle, réponses contextuelles et suggestions intelligentes.
+        </p>
+        <div class="flex flex-wrap gap-1.5 mt-auto pt-4 border-t border-[#1a1a1a]">
+          <span class="tech-tag">JavaScript</span>
+          <span class="tech-tag">AI API</span>
+          <span class="tech-tag">HTML/CSS</span>
+        </div>
+      </a>
+
+      <!-- Nexus Calculator -->
+      <a class="nexus-card tilt-card project-card p-6 gap-5" data-status="live" data-tags="nexus calculator calculatrice convertisseur"
+         href="https://nexus-calculator.onrender.com/" target="_blank">
+        <div class="flex items-start justify-between">
+          <div class="flex items-center gap-3">
+            <i class="fas fa-calculator card-icon text-zinc-500 text-lg"></i>
+            <div>
+              <h3 class="text-sm font-semibold">Nexus Calculator</h3>
+              <span class="status-live text-[9px] mono uppercase tracking-wider px-1.5 py-0.5 rounded border">Live</span>
+            </div>
+          </div>
+          <i class="fas fa-arrow-up-right-from-square ext-icon text-zinc-600 text-xs"></i>
+        </div>
+        <p class="text-zinc-500 text-[11px] leading-relaxed flex-1">
+          Calculatrice & convertisseur de précision. Interface claire, historique des calculs, raccourcis clavier.
+        </p>
+        <div class="flex flex-wrap gap-1.5 mt-auto pt-4 border-t border-[#1a1a1a]">
+          <span class="tech-tag">JavaScript</span>
+          <span class="tech-tag">HTML/CSS</span>
+        </div>
+      </a>
+
+      <!-- Nexus Hub -->
+      <a class="nexus-card tilt-card project-card p-6 gap-5" data-status="live" data-tags="nexus hub portail site"
+         href="index.html">
+        <div class="flex items-start justify-between">
+          <div class="flex items-center gap-3">
+            <i class="fas fa-network-wired card-icon text-zinc-500 text-lg"></i>
+            <div>
+              <h3 class="text-sm font-semibold">Nexus Hub</h3>
+              <span class="status-live text-[9px] mono uppercase tracking-wider px-1.5 py-0.5 rounded border">Live</span>
+            </div>
+          </div>
+          <i class="fas fa-arrow-up-right-from-square ext-icon text-zinc-600 text-xs"></i>
+        </div>
+        <p class="text-zinc-500 text-[11px] leading-relaxed flex-1">
+          Ce portail — hub personnel centralisant tous les modules Nexus. Particles canvas, cursor custom, design minimal dark.
+        </p>
+        <div class="flex flex-wrap gap-1.5 mt-auto pt-4 border-t border-[#1a1a1a]">
+          <span class="tech-tag">HTML/CSS</span>
+          <span class="tech-tag">JavaScript</span>
+          <span class="tech-tag">Tailwind</span>
+        </div>
+      </a>
+
+      <!-- Nexus Camera -->
+      <div class="nexus-card tilt-card project-card p-6 gap-5" data-status="dev" data-tags="nexus camera webcam vidéo">
+        <div class="flex items-start justify-between">
+          <div class="flex items-center gap-3">
+            <i class="fas fa-camera card-icon text-zinc-500 text-lg"></i>
+            <div>
+              <h3 class="text-sm font-semibold">Nexus Camera</h3>
+              <span class="status-dev text-[9px] mono uppercase tracking-wider px-1.5 py-0.5 rounded border">En dev</span>
+            </div>
+          </div>
+        </div>
+        <p class="text-zinc-500 text-[11px] leading-relaxed flex-1">
+          Application caméra web interactive avec filtres temps réel, capture photo et effets visuels. En cours de développement.
+        </p>
+        <div class="flex flex-wrap gap-1.5 mt-auto pt-4 border-t border-[#1a1a1a]">
+          <span class="tech-tag">JavaScript</span>
+          <span class="tech-tag">WebRTC</span>
+          <span class="tech-tag">Canvas API</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Empty state -->
+    <div class="hidden text-center py-16 fade-up" id="empty-state">
+      <p class="mono text-[10px] uppercase tracking-widest text-zinc-700">Aucun projet trouvé</p>
+    </div>
+
+    <!-- Back -->
+    <div class="fade-up d6">
+      <a href="archive.html" class="back-link">
+        <i class="fas fa-arrow-left text-[10px]"></i> Retour à l'archive
+      </a>
+    </div>
+
+  </main>
+
+  <footer class="w-full max-w-6xl px-6 py-10 mt-4 border-t border-[#111] flex flex-col md:flex-row justify-between items-center gap-6">
+    <p class="text-[10px] tracking-[.2em] text-zinc-600 uppercase">
+      Nexus-Hub <span class="text-zinc-800 px-2">|</span> 2026
+    </p>
+    <div class="flex gap-8 text-[9px] mono uppercase tracking-widest text-zinc-700">
+      <span class="flex items-center gap-2">
+        <span class="w-1.5 h-1.5 bg-emerald-600 rounded-full pulse inline-block"></span>
+        Core Stable
+      </span>
+      <span>Uptime 99.9%</span>
+    </div>
+  </footer>
+
+</div>
+
+<script src="nexus-shared.js"></script>
+<script>
+// ── Filter buttons ──────────────────────────────
+const filterBtns = document.querySelectorAll('.filter-btn');
+const cards = document.querySelectorAll('#projects-grid [data-status]');
+const emptyState = document.getElementById('empty-state');
+let activeFilter = 'all';
+
+function applyFilters() {
+  const q = (document.getElementById('searchInput').value || '').toLowerCase();
+  let visible = 0;
+  cards.forEach(card => {
+    const statusOk = activeFilter === 'all' || card.dataset.status === activeFilter;
+    const searchOk = !q || card.dataset.tags.includes(q) || card.textContent.toLowerCase().includes(q);
+    const show = statusOk && searchOk;
+    card.style.display = show ? 'flex' : 'none';
+    if (show) visible++;
+  });
+  emptyState.classList.toggle('hidden', visible > 0);
+}
+
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    applyFilters();
+  });
+});
+
+document.getElementById('searchInput').addEventListener('input', applyFilters);
+</script>
 </body>
 </html>

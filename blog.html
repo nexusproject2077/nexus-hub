@@ -9,78 +9,8 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="nexus-base.css" rel="stylesheet"/>
 <style>
-  :root { --obsidian: #0a0a0c; --border: #2a2a2a; --accent: #6366f1; }
-  *, *::before, *::after { box-sizing: border-box; }
-
-  body {
-    background-color: var(--obsidian);
-    color: #fff;
-    font-family: 'Inter', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
-    cursor: none;
-    line-height: 1.8;
-  }
-
-  .c-dot {
-    position: fixed; top: 0; left: 0; width: 6px; height: 6px;
-    background: #fff; border-radius: 50%; pointer-events: none;
-    z-index: 9999; transform: translate(-50%,-50%);
-  }
-  .c-ring {
-    position: fixed; top: 0; left: 0; width: 32px; height: 32px;
-    border: 1px solid rgba(255,255,255,.25); border-radius: 50%;
-    pointer-events: none; z-index: 9998; transform: translate(-50%,-50%);
-    transition: width .2s, height .2s, border-color .2s;
-  }
-  .c-ring.big { width: 52px; height: 52px; border-color: rgba(99,102,241,.6); }
-
-  #bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
-  #spotlight {
-    position: fixed; inset: 0; z-index: 1; pointer-events: none;
-    background: radial-gradient(650px circle at var(--mx,50%) var(--my,50%),
-      rgba(99,102,241,.05), transparent 60%);
-  }
-  .scanlines {
-    position: fixed; inset: 0; z-index: 2; pointer-events: none;
-    background: repeating-linear-gradient(0deg, transparent, transparent 2px,
-      rgba(0,0,0,.04) 2px, rgba(0,0,0,.04) 4px);
-  }
-  .wrap { position: relative; z-index: 3; }
-  .mono { font-family: 'Share Tech Mono', monospace; }
-
-  .glitch { position: relative; display: inline-block; }
-  .glitch::before, .glitch::after {
-    content: attr(data-text); position: absolute; top: 0; left: 0;
-    width: 100%; height: 100%; opacity: 0;
-  }
-  .glitch::before { color: #f0f; animation: gb 7s infinite; }
-  .glitch::after  { color: #0ff; animation: ga 7s infinite; }
-  @keyframes gb {
-    0%,88%,100% { opacity:0; transform:translate(0); }
-    90% { opacity:.7; transform:translate(-2px,1px); clip-path:polygon(0 0,100% 0,100% 35%,0 35%); }
-    92% { opacity:0; } 94% { opacity:.5; transform:translate(2px,-1px); clip-path:polygon(0 65%,100% 65%,100% 80%,0 80%); } 96% { opacity:0; }
-  }
-  @keyframes ga {
-    0%,89%,100% { opacity:0; transform:translate(0); }
-    91% { opacity:.6; transform:translate(2px,-1px); clip-path:polygon(0 40%,100% 40%,100% 60%,0 60%); }
-    93% { opacity:0; } 95% { opacity:.5; transform:translate(-2px,1px); clip-path:polygon(0 20%,100% 20%,100% 40%,0 40%); } 97% { opacity:0; }
-  }
-
-  .insta-pill { transition: background .2s, transform .2s; }
-  .insta-pill:hover { background: rgba(30,30,32,1); transform: scale(1.03); }
-
-  .back-link {
-    display: inline-flex; align-items: center; gap: .5rem;
-    color: #444; font-size: .7rem; text-decoration: none;
-    font-family: 'Share Tech Mono', monospace;
-    text-transform: uppercase; letter-spacing: .15em;
-    transition: color .2s;
-  }
-  .back-link:hover { color: #a5b4fc; }
-
-  /* Article styles */
   .article-card {
     border: 1px solid var(--border);
     border-radius: .75rem;
@@ -88,15 +18,14 @@
     padding: 2.5rem;
     backdrop-filter: blur(4px);
   }
-
-  .section-divider {
-    border: none;
-    border-top: 1px solid #1a1a1c;
-    margin: 2rem 0;
+  .sec-label {
+    display: flex; align-items: center; gap: .75rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: .65rem; text-transform: uppercase;
+    letter-spacing: .2em; color: #555;
   }
-
+  .sec-label::after { content: ''; flex: 1; height: 1px; background: #1a1a1c; }
   .highlight { color: #a5b4fc; font-weight: 600; }
-
   .quote-block {
     border-left: 2px solid #2a2a2a;
     padding: .75rem 1.25rem;
@@ -106,48 +35,16 @@
   }
   .quote-block p { color: #aaa; font-size: .85rem; margin-bottom: .5rem; }
   .quote-block p:last-child { margin-bottom: 0; }
-
-  .section-label {
-    display: flex; align-items: center; gap: .75rem;
-    font-size: .7rem; font-family: 'Share Tech Mono', monospace;
-    text-transform: uppercase; letter-spacing: .2em; color: #555;
-    margin-bottom: 1rem;
-  }
-  .section-label::after {
-    content: ''; flex: 1; height: 1px; background: #1a1a1c;
-  }
-
-  .pulse { animation: pulse 2.5s ease infinite; }
-  @keyframes pulse {
-    0%,100% { opacity:1; box-shadow: 0 0 0 0 rgba(52,211,153,.4); }
-    50%      { opacity:.5; box-shadow: 0 0 0 4px rgba(52,211,153,0); }
-  }
-
-  .fade-up { opacity:0; transform:translateY(24px); animation: fadeup .7s ease forwards; }
-  @keyframes fadeup { to { opacity:1; transform:translateY(0); } }
-  .d1{animation-delay:.05s} .d2{animation-delay:.15s} .d3{animation-delay:.28s}
-  .d4{animation-delay:.42s} .d5{animation-delay:.56s} .d6{animation-delay:.70s}
-
-  #system-time { font-variant-numeric: tabular-nums; }
-
-  .ticker-wrap { overflow: hidden; border-top: 1px solid #111; border-bottom: 1px solid #111; }
-  .ticker-track { display: flex; gap: 4rem; white-space: nowrap; animation: ticker 22s linear infinite; }
-  @keyframes ticker { from { transform:translateX(0); } to { transform:translateX(-50%); } }
-
-  ::-webkit-scrollbar { width: 3px; }
-  ::-webkit-scrollbar-track { background: var(--obsidian); }
-  ::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 2px; }
-
-  @media (hover: none) { body { cursor: auto; } .c-dot, .c-ring { display: none; } }
 </style>
 </head>
-<body class="flex flex-col items-center min-h-screen">
+<body class="flex flex-col items-center">
 
 <canvas id="bg"></canvas>
 <div id="spotlight"></div>
 <div class="scanlines"></div>
 <div class="c-dot" id="cdot"></div>
 <div class="c-ring" id="cring"></div>
+<a href="#" id="scroll-top"><i class="fas fa-arrow-up"></i></a>
 
 <div class="wrap w-full flex flex-col items-center">
 
@@ -177,11 +74,9 @@
   <div class="ticker-wrap w-full py-2 fade-up d2">
     <div class="ticker-track mono text-[9px] uppercase tracking-widest text-zinc-700">
       <span>NEXUS BLOG</span><span>◆</span><span>Pensées & Explorations</span><span>◆</span>
-      <span>Meric Koken</span><span>◆</span><span>BUT MMI</span><span>◆</span>
-      <span>Full-Stack</span><span>◆</span><span>2026</span><span>◆</span>
+      <span>Meric Koken</span><span>◆</span><span>BUT MMI</span><span>◆</span><span>Full-Stack</span><span>◆</span>
       <span>NEXUS BLOG</span><span>◆</span><span>Pensées & Explorations</span><span>◆</span>
-      <span>Meric Koken</span><span>◆</span><span>BUT MMI</span><span>◆</span>
-      <span>Full-Stack</span><span>◆</span><span>2026</span><span>◆</span>
+      <span>Meric Koken</span><span>◆</span><span>BUT MMI</span><span>◆</span><span>Full-Stack</span><span>◆</span>
     </div>
   </div>
 
@@ -196,7 +91,6 @@
     <!-- Article -->
     <article class="article-card fade-up d3">
 
-      <!-- Article header -->
       <div class="mb-8">
         <p class="mono text-[10px] uppercase tracking-widest text-zinc-600 mb-3">Article — 2025</p>
         <h3 class="text-xl md:text-2xl font-bold tracking-tight leading-snug mb-4">
@@ -209,11 +103,10 @@
         </div>
       </div>
 
-      <hr class="section-divider"/>
+      <hr style="border:none;border-top:1px solid #1a1a1c;margin:0 0 2rem"/>
 
-      <!-- Intro -->
       <div class="quote-block mb-8">
-        <p style="color:#ccc; font-size:.9rem; line-height:1.8">
+        <p style="color:#ccc;font-size:.9rem;line-height:1.8">
           Salut, je m'appelle <span class="highlight">Meric Koken</span>, j'ai 19 ans et je suis actuellement en première année de
           <span class="highlight">BUT MMI</span> (Métiers du Multimédia et de l'Internet) à l'IUT de Troyes.
           Mais mon parcours dans le développement web a commencé bien avant : ça fait maintenant
@@ -221,48 +114,45 @@
         </p>
       </div>
 
-      <!-- Compétences -->
       <section class="mb-8">
-        <div class="section-label">
-          <i class="fas fa-code text-[10px] text-zinc-600"></i>
+        <div class="sec-label mb-4">
+          <i class="fas fa-code text-[10px]"></i>
           Compétences techniques
         </div>
-        <p class="text-zinc-400 text-sm mb-4">Je maîtrise plusieurs technologies qui me permettent de créer des projets complets de A à Z :</p>
+        <p class="text-zinc-400 text-sm mb-4">Je maîtrise plusieurs technologies pour créer des projets complets de A à Z :</p>
         <div class="quote-block">
           <p><span class="highlight">Front-end :</span> HTML, CSS, JavaScript — interfaces propres et responsive</p>
-          <p><span class="highlight">Back-end :</span> PHP, avec une bonne expérience en gestion de bases de données</p>
+          <p><span class="highlight">Back-end :</span> PHP, gestion de bases de données</p>
           <p><span class="highlight">Bases de données :</span> MySQL et MongoDB — relationnel et NoSQL</p>
-          <p><span class="highlight">Gestion de projet :</span> Chef de projet pour une équipe de 4 sur les SAE 105-106, diagrammes GANTT et gestion des risques</p>
+          <p><span class="highlight">Gestion de projet :</span> Chef de projet SAE 105-106 (équipe de 4), diagrammes GANTT, gestion des risques</p>
         </div>
       </section>
 
-      <!-- Projets -->
       <section class="mb-8">
-        <div class="section-label">
-          <i class="fas fa-rocket text-[10px] text-zinc-600"></i>
+        <div class="sec-label mb-4">
+          <i class="fas fa-rocket text-[10px]"></i>
           Projets
         </div>
         <p class="text-zinc-400 text-sm mb-4">Plusieurs projets qui montrent l'étendue de mes compétences :</p>
         <div class="quote-block">
-          <p><span class="highlight">Nexus Social :</span> Réseau social complet — authentification, commentaires, messagerie temps réel, gamification. Optimisé mobile & desktop.</p>
-          <p><span class="highlight">Nexus Camera :</span> Application de caméra web interactive</p>
+          <p><span class="highlight">Nexus Social :</span> Réseau social complet — auth, messagerie temps réel, gamification.</p>
+          <p><span class="highlight">Nexus Camera :</span> Application caméra web interactive</p>
           <p><span class="highlight">Nexus Calculator :</span> Calculatrice fonctionnelle et intuitive</p>
           <p><span class="highlight">Nexus AI :</span> Intelligence artificielle intégrée à l'écosystème Nexus</p>
         </div>
-        <p class="text-zinc-500 text-sm mt-4">Ces projets m'ont permis de toucher à tous les aspects du développement : architecture, sécurité, UX/UI, optimisation et déploiement.</p>
+        <p class="text-zinc-500 text-sm mt-4">Architecture, sécurité, UX/UI, optimisation et déploiement.</p>
       </section>
 
-      <!-- Approche -->
       <section>
-        <div class="section-label">
-          <i class="fas fa-bullseye text-[10px] text-zinc-600"></i>
+        <div class="sec-label mb-4">
+          <i class="fas fa-bullseye text-[10px]"></i>
           Mon approche
         </div>
         <p class="text-zinc-400 text-sm mb-4">
-          Je ne me contente pas de coder : <span class="highlight">je gère</span>. Que ce soit en tant que chef de projet à l'IUT ou sur mes projets persos, j'aime avoir une vision globale, anticiper les problèmes et livrer des solutions qui fonctionnent vraiment.
+          Je ne me contente pas de coder : <span class="highlight">je gère</span>. Vision globale, anticipation des problèmes, livraison de solutions qui fonctionnent vraiment.
         </p>
         <div class="quote-block">
-          <p style="color:#888; font-style:italic">Mon objectif ? Continuer à progresser, apprendre de nouvelles technologies et créer des projets qui ont un impact réel.</p>
+          <p style="color:#888;font-style:italic">Mon objectif ? Continuer à progresser, apprendre de nouvelles technologies et créer des projets qui ont un impact réel.</p>
         </div>
       </section>
 
@@ -277,7 +167,7 @@
 
   </main>
 
-  <footer class="w-full max-w-6xl px-6 py-10 mt-4 border-t border-[#111] flex flex-col md:flex-row justify-between items-center gap-6 fade-up d6">
+  <footer class="w-full max-w-6xl px-6 py-10 mt-4 border-t border-[#111] flex flex-col md:flex-row justify-between items-center gap-6">
     <p class="text-[10px] tracking-[.2em] text-zinc-600 uppercase">
       Nexus-Hub <span class="text-zinc-800 px-2">|</span> 2026
     </p>
@@ -292,60 +182,6 @@
 
 </div>
 
-<script>
-function tick() {
-  document.getElementById('system-time').textContent =
-    new Date().toLocaleTimeString('fr-FR', { hour12: false });
-}
-setInterval(tick, 1000); tick();
-
-const dot = document.getElementById('cdot');
-const ring = document.getElementById('cring');
-let mx = innerWidth/2, my = innerHeight/2, rx = mx, ry = my;
-document.addEventListener('mousemove', e => {
-  mx = e.clientX; my = e.clientY;
-  dot.style.left = mx + 'px'; dot.style.top = my + 'px';
-  document.getElementById('spotlight').style.setProperty('--mx', mx + 'px');
-  document.getElementById('spotlight').style.setProperty('--my', my + 'px');
-});
-(function lr() {
-  rx += (mx-rx)*.1; ry += (my-ry)*.1;
-  ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
-  requestAnimationFrame(lr);
-})();
-document.querySelectorAll('a,button').forEach(el => {
-  el.addEventListener('mouseenter', () => ring.classList.add('big'));
-  el.addEventListener('mouseleave', () => ring.classList.remove('big'));
-});
-
-const cv = document.getElementById('bg');
-const cx = cv.getContext('2d');
-let W, H, pts = [];
-function resize() { W = cv.width = innerWidth; H = cv.height = innerHeight; }
-window.addEventListener('resize', resize); resize();
-class P {
-  constructor() { this.init(); }
-  init() {
-    this.x=Math.random()*W; this.y=Math.random()*H;
-    this.vx=(Math.random()-.5)*.25; this.vy=(Math.random()-.5)*.25;
-    this.r=Math.random()*1.2+.4; this.a=Math.random()*.35+.08;
-  }
-  step() { this.x+=this.vx; this.y+=this.vy; if(this.x<0||this.x>W||this.y<0||this.y>H)this.init(); }
-  draw() { cx.beginPath(); cx.arc(this.x,this.y,this.r,0,Math.PI*2); cx.fillStyle=`rgba(180,180,255,${this.a})`; cx.fill(); }
-}
-for(let i=0;i<90;i++) pts.push(new P());
-(function frame() {
-  cx.clearRect(0,0,W,H);
-  for(let i=0;i<pts.length;i++){
-    pts[i].step(); pts[i].draw();
-    for(let j=i+1;j<pts.length;j++){
-      const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y, d=Math.sqrt(dx*dx+dy*dy);
-      if(d<110){ cx.beginPath(); cx.moveTo(pts[i].x,pts[i].y); cx.lineTo(pts[j].x,pts[j].y);
-        cx.strokeStyle=`rgba(99,102,241,${.12*(1-d/110)})`; cx.lineWidth=.5; cx.stroke(); }
-    }
-  }
-  requestAnimationFrame(frame);
-})();
-</script>
+<script src="nexus-shared.js"></script>
 </body>
 </html>

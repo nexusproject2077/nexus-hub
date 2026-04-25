@@ -1,65 +1,39 @@
-const CACHE_NAME = 'nexus-cache-v1';
+const CACHE = 'nexus-v3';
 
-// Les chemins sont relatifs au Service Worker, donc relatifs au dossier /fils/
-const urlsToCache = [
-    './', // index.html dans le dossier courant
-    './index.html',
-    './manifest.json',
-    './archive.html',
-    './icon-192.png',
-    './icon-512.png',
-    // Ajout des fichiers d'archive pour le mode hors ligne
-    './archive/projets.html',
-    './archive/competences.html',
-    './archive/cv.html'
+const ASSETS = [
+  './',
+  './index.html',
+  './archive.html',
+  './blog.html',
+  './projets.html',
+  './competences.html',
+  './cv.html',
+  './nexus-base.css',
+  './nexus-shared.js',
+  './manifest.json',
+  './favicon.png',
+  './followers_data.json',
 ];
 
-// Installation du Service Worker
-self.addEventListener('install', event => {
-    event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then(cache => {
-                console.log('Cache ouvert. Ajout des ressources Nexus.');
-                return cache.addAll(urlsToCache);
-            })
-            .catch(error => {
-                console.error('Échec de la mise en cache des ressources :', error);
-            })
-    );
+self.addEventListener('install', e => {
+  e.waitUntil(
+    caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting())
+  );
 });
 
-// Interception des requêtes pour servir les fichiers à partir du cache
-self.addEventListener('fetch', event => {
-    // Si la requête est pour des ressources externes (CDN), on les laisse passer
-    if (event.request.url.startsWith('https://fonts.googleapis.com/') ||
-        event.request.url.startsWith('https://fonts.gstatic.com/') ||
-        event.request.url.startsWith('https://kit.fontawesome.com/')) {
-        return; 
-    }
-    
-    event.respondWith(
-        caches.match(event.request)
-            .then(response => {
-                if (response) {
-                    return response;
-                }
-                return fetch(event.request);
-            })
-    );
+self.addEventListener('activate', e => {
+  e.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+    ).then(() => self.clients.claim())
+  );
 });
 
-// Mise à jour du Service Worker
-self.addEventListener('activate', event => {
-    const cacheWhitelist = [CACHE_NAME];
-    event.waitUntil(
-        caches.keys().then(cacheNames => {
-            return Promise.all(
-                cacheNames.map(cacheName => {
-                    if (cacheWhitelist.indexOf(cacheName) === -1) {
-                        return caches.delete(cacheName);
-                    }
-                })
-            );
-        })
-    );
+self.addEventListener('fetch', e => {
+  // Pass through external requests (CDN, APIs)
+  if (!e.request.url.startsWith(self.location.origin)) return;
+
+  e.respondWith(
+    caches.match(e.request).then(cached => cached || fetch(e.request))
+  );
 });
