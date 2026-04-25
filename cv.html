@@ -1,30 +1,297 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Archive | CV et Missions</title>
-    <style>
-        body { background-color: #1a1a2e; color: #e0e0e0; font-family: 'Share Tech Mono', monospace; padding: 50px; }
-        h1 { color: #00f0ff; }
-        h2 { color: #e900ff; margin-top: 20px; }
-        a { color: #e900ff; text-decoration: none; }
-        a:hover { color: #00f0ff; }
-    </style>
-</head>
-<body>
-    <h1>:: JOURNAL DE MISSIONS ET ACCRÉDITATIONS ::</h1>
-    <p>Historique des expériences professionnelles et des certifications.</p>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NEXUS HUB | CV</title>
+<link href="./manifest.json" rel="manifest"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="nexus-base.css" rel="stylesheet"/>
+<style>
+  /* ── Timeline ────────────────────────────── */
+  .timeline { position: relative; padding-left: 1.5rem; }
+  .timeline::before {
+    content: ''; position: absolute;
+    left: 0; top: .5rem; bottom: 0;
+    width: 1px; background: #1a1a1c;
+  }
+  .tl-item { position: relative; padding-bottom: 2rem; }
+  .tl-item:last-child { padding-bottom: 0; }
+  .tl-dot {
+    position: absolute; left: -1.5rem;
+    top: .4rem; transform: translateX(-50%);
+    width: 7px; height: 7px;
+    border-radius: 50%; border: 1px solid #4a4a4a;
+    background: var(--obsidian);
+    transition: border-color .2s, background .2s;
+  }
+  .tl-item:hover .tl-dot {
+    border-color: #6366f1;
+    background: rgba(99,102,241,.3);
+  }
 
-    <h2>MISSION 01 : [Nom de l'Entreprise]</h2>
-    <p>[Titre du Poste] - [Date Début] à [Date Fin]</p>
-    <p>Rôle : Développement et maintenance du système X. Technologie : Y.</p>
-    
-    <h2>ACCRÉDITATION : [Nom de la Certification]</h2>
-    <p>Délivrée par : [Nom de l'Organisme] - <a href="Lien_Certificat">Voir l'Accréditation</a></p>
-    
-    <hr style="margin-top: 30px;">
-    <p>Fichier de Transfert CV : <a href="votre_cv.pdf" target="_blank">Télécharger le CV (PDF)</a> (Ajouter votre PDF ici)</p>
-    <a href="archive.html" style="display: block; margin-top: 20px;">← Retour à l'Archive</a>
+  /* ── Section divider ─────────────────────── */
+  .sec-label {
+    display: flex; align-items: center; gap: .75rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: .65rem; text-transform: uppercase;
+    letter-spacing: .2em; color: #555;
+  }
+  .sec-label::after { content: ''; flex: 1; height: 1px; background: #1a1a1c; }
+
+  /* ── Download / Print buttons ────────────── */
+  .btn-outline {
+    display: inline-flex; align-items: center; gap: .5rem;
+    border: 1px solid #2a2a2a; border-radius: .375rem;
+    padding: .5rem 1rem; font-size: .7rem;
+    font-family: 'Share Tech Mono', monospace;
+    text-transform: uppercase; letter-spacing: .12em;
+    color: #666; text-decoration: none;
+    background: transparent; cursor: none;
+    transition: border-color .2s, color .2s;
+  }
+  .btn-outline:hover { border-color: #555; color: #fff; }
+
+  /* ── Skill tag ──────────────────────────── */
+  .cv-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: .6rem; letter-spacing: .08em;
+    padding: .2rem .55rem; border-radius: .25rem;
+    border: 1px solid #222; color: #555;
+    background: rgba(255,255,255,.02);
+  }
+
+  /* ── Print styles ───────────────────────── */
+  @media print {
+    canvas, #spotlight, .scanlines, .c-dot, .c-ring,
+    header .insta-pill, .ticker-wrap, #scroll-top,
+    .back-link, footer { display: none !important; }
+    body { background: #fff !important; color: #000 !important; cursor: auto !important; }
+    .wrap { color: #000; }
+    .text-zinc-500, .text-zinc-600 { color: #555 !important; }
+    .text-zinc-300, .text-zinc-400 { color: #222 !important; }
+    .border-\[\#111\], .border-\[\#222\], .border-\[\#1a1a1a\] { border-color: #ddd !important; }
+    .bg-\[rgba\(10\,10\,12\,\.85\)\] { background: #f9f9f9 !important; }
+    h2 { color: #000 !important; }
+    .glitch::before, .glitch::after { display: none; }
+  }
+</style>
+</head>
+<body class="flex flex-col items-center">
+
+<canvas id="bg"></canvas>
+<div id="spotlight"></div>
+<div class="scanlines"></div>
+<div class="c-dot" id="cdot"></div>
+<div class="c-ring" id="cring"></div>
+<a href="#" id="scroll-top"><i class="fas fa-arrow-up"></i></a>
+
+<div class="wrap w-full flex flex-col items-center">
+
+  <!-- Header -->
+  <header class="w-full max-w-6xl px-6 py-8 flex justify-between items-center fade-up d1">
+    <div class="flex items-center gap-4">
+      <a href="index.html">
+        <h1 class="text-xl font-bold tracking-tight glitch" data-text="NEXUS HUB">
+          NEXUS <span class="font-light text-zinc-500">HUB</span>
+        </h1>
+      </a>
+      <div class="hidden md:block h-4 w-px bg-[#222]"></div>
+      <span class="hidden md:block text-[10px] text-zinc-600 mono uppercase tracking-widest" id="system-time">00:00:00</span>
+    </div>
+    <a class="insta-pill flex items-center gap-3 px-3 py-1.5 rounded-full border border-[#222]"
+       href="https://www.instagram.com/merickn/" target="_blank">
+      <div class="text-right">
+        <p class="text-[10px] font-semibold leading-none text-white">@merickn</p>
+        <p class="text-[9px] text-zinc-500 leading-none mt-0.5">1 234 abonnés</p>
+      </div>
+      <img alt="Profile" class="w-6 h-6 rounded-full object-cover"
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDr64yMXYw0xB7ANsOhknluhk80IuEfnWigXyg7LOUsjqVpCyLkTeXxP28mRuN4uEoqfkrD5A_1vB0qQx3e5gOVPNR0nfBUlECHeN2m-Al1h_YKfWTs-MvgP2usQWCENZDxjBFnWXNaVc3DQG6VPh_7RGWFwGXr2nqTpwLorGOxDBwVRTMmpQVWtSHq9hDBjERH7FDvwJVF4TtAsp7B--SwIowDYhEIeV8NLu3ok10J8D2zTa9bfBOY9zmz0LC9Nd9YS6HD-s4G82a_"/>
+    </a>
+  </header>
+
+  <!-- Ticker -->
+  <div class="ticker-wrap w-full py-2 fade-up d2">
+    <div class="ticker-track mono text-[9px] uppercase tracking-widest text-zinc-700">
+      <span>CV & MISSIONS</span><span>◆</span><span>BUT MMI — Troyes</span><span>◆</span>
+      <span>Full-Stack Dev</span><span>◆</span><span>6 ans d'expérience</span><span>◆</span>
+      <span>Chef de projet</span><span>◆</span>
+      <span>CV & MISSIONS</span><span>◆</span><span>BUT MMI — Troyes</span><span>◆</span>
+      <span>Full-Stack Dev</span><span>◆</span><span>6 ans d'expérience</span><span>◆</span>
+      <span>Chef de projet</span><span>◆</span>
+    </div>
+  </div>
+
+  <main class="w-full max-w-3xl px-6 py-16 space-y-16">
+
+    <!-- Identity block -->
+    <section class="flex flex-col md:flex-row md:items-center justify-between gap-6 fade-up d2">
+      <div class="space-y-1">
+        <p class="mono text-[10px] uppercase tracking-widest text-zinc-600">Répertoire 03</p>
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tight">Meric Koken</h2>
+        <p class="text-zinc-500 text-sm font-light">Développeur Web Full-Stack · Chef de projet</p>
+        <div class="flex flex-wrap gap-3 pt-2 text-[10px] mono text-zinc-600">
+          <span><i class="fas fa-map-marker-alt mr-1"></i>Troyes, France</span>
+          <span><i class="fab fa-instagram mr-1"></i>@merickn</span>
+        </div>
+      </div>
+      <!-- Action buttons -->
+      <div class="flex gap-3 flex-wrap">
+        <a href="votre_cv.pdf" target="_blank" class="btn-outline" download>
+          <i class="fas fa-download text-[10px]"></i> Télécharger CV
+        </a>
+        <button class="btn-outline" onclick="window.print()">
+          <i class="fas fa-print text-[10px]"></i> Imprimer
+        </button>
+      </div>
+    </section>
+
+    <!-- Formation -->
+    <section class="space-y-6 fade-up d3">
+      <div class="sec-label">
+        <i class="fas fa-graduation-cap text-[10px]"></i>
+        Formation
+      </div>
+      <div class="timeline">
+
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h3 class="text-sm font-semibold">BUT MMI — Métiers du Multimédia et de l'Internet</h3>
+              <p class="text-zinc-500 text-[11px] mt-0.5">IUT de Troyes · 2024 – 2027</p>
+              <p class="text-zinc-600 text-[11px] mt-2 leading-relaxed max-w-md">
+                Développement web, UX/UI, gestion de projet, audiovisuel. Chef de projet SAE 105-106 (équipe de 4 — diagrammes Gantt, gestion des risques).
+              </p>
+            </div>
+            <span class="mono text-[9px] text-zinc-700 shrink-0">En cours</span>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h3 class="text-sm font-semibold">Baccalauréat</h3>
+              <p class="text-zinc-500 text-[11px] mt-0.5">2024</p>
+            </div>
+            <span class="mono text-[9px] text-zinc-700 shrink-0">Obtenu</span>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div>
+            <h3 class="text-sm font-semibold">Autodidacte — Développement web</h3>
+            <p class="text-zinc-500 text-[11px] mt-0.5">2020 – présent · 6 ans</p>
+            <p class="text-zinc-600 text-[11px] mt-2 leading-relaxed max-w-md">
+              HTML, CSS, JS, PHP, MySQL, MongoDB, Python — apprentissage en continu sur projets personnels.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Projets notables -->
+    <section class="space-y-6 fade-up d4">
+      <div class="sec-label">
+        <i class="fas fa-rocket text-[10px]"></i>
+        Projets notables
+      </div>
+      <div class="space-y-4">
+
+        <div class="border border-[#1a1a1a] rounded-lg p-4 hover:border-[#2a2a2a] transition-colors">
+          <div class="flex items-center justify-between mb-1">
+            <h3 class="text-sm font-semibold">Nexus Social</h3>
+            <span class="mono text-[9px] text-emerald-600">Live</span>
+          </div>
+          <p class="text-zinc-500 text-[11px] leading-relaxed mb-3">
+            Réseau social complet — authentification, messagerie temps réel, commentaires, gamification. Optimisé mobile & desktop.
+          </p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="cv-tag">PHP</span><span class="cv-tag">MySQL</span>
+            <span class="cv-tag">JavaScript</span><span class="cv-tag">WebSocket</span>
+          </div>
+        </div>
+
+        <div class="border border-[#1a1a1a] rounded-lg p-4 hover:border-[#2a2a2a] transition-colors">
+          <div class="flex items-center justify-between mb-1">
+            <h3 class="text-sm font-semibold">Nexus AI</h3>
+            <span class="mono text-[9px] text-emerald-600">Live</span>
+          </div>
+          <p class="text-zinc-500 text-[11px] leading-relaxed mb-3">
+            Assistant IA intégré à l'écosystème Nexus. Interface conversationnelle et réponses contextuelles.
+          </p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="cv-tag">JavaScript</span><span class="cv-tag">AI API</span>
+          </div>
+        </div>
+
+        <div class="border border-[#1a1a1a] rounded-lg p-4 hover:border-[#2a2a2a] transition-colors">
+          <div class="flex items-center justify-between mb-1">
+            <h3 class="text-sm font-semibold">Nexus Calculator</h3>
+            <span class="mono text-[9px] text-emerald-600">Live</span>
+          </div>
+          <p class="text-zinc-500 text-[11px] leading-relaxed mb-3">
+            Calculatrice & convertisseur de précision avec historique des calculs et raccourcis clavier.
+          </p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="cv-tag">HTML/CSS</span><span class="cv-tag">JavaScript</span>
+          </div>
+        </div>
+
+      </div>
+      <a href="projets.html" class="back-link">
+        Voir tous les projets <i class="fas fa-arrow-right text-[10px]"></i>
+      </a>
+    </section>
+
+    <!-- Compétences résumé -->
+    <section class="space-y-4 fade-up d5">
+      <div class="sec-label">
+        <i class="fas fa-layer-group text-[10px]"></i>
+        Stack technique
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <span class="cv-tag">HTML5</span><span class="cv-tag">CSS3</span>
+        <span class="cv-tag">JavaScript</span><span class="cv-tag">PHP</span>
+        <span class="cv-tag">Python</span><span class="cv-tag">MySQL</span>
+        <span class="cv-tag">MongoDB</span><span class="cv-tag">Git</span>
+        <span class="cv-tag">Docker</span><span class="cv-tag">Tailwind CSS</span>
+      </div>
+      <a href="competences.html" class="back-link mt-2 inline-flex">
+        Voir le détail des compétences <i class="fas fa-arrow-right text-[10px]"></i>
+      </a>
+    </section>
+
+    <!-- Back -->
+    <div class="fade-up d6">
+      <a href="archive.html" class="back-link">
+        <i class="fas fa-arrow-left text-[10px]"></i> Retour à l'archive
+      </a>
+    </div>
+
+  </main>
+
+  <footer class="w-full max-w-6xl px-6 py-10 mt-4 border-t border-[#111] flex flex-col md:flex-row justify-between items-center gap-6">
+    <p class="text-[10px] tracking-[.2em] text-zinc-600 uppercase">
+      Nexus-Hub <span class="text-zinc-800 px-2">|</span> 2026
+    </p>
+    <div class="flex gap-8 text-[9px] mono uppercase tracking-widest text-zinc-700">
+      <span class="flex items-center gap-2">
+        <span class="w-1.5 h-1.5 bg-emerald-600 rounded-full pulse inline-block"></span>
+        Core Stable
+      </span>
+      <span>Uptime 99.9%</span>
+    </div>
+  </footer>
+
+</div>
+
+<script src="nexus-shared.js"></script>
 </body>
 </html>

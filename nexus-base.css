@@ -1,0 +1,214 @@
+/* ═══════════════════════════════════════════════
+   NEXUS BASE — Shared styles for all pages
+   ═══════════════════════════════════════════════ */
+
+:root {
+  --obsidian: #0a0a0c;
+  --border:   #2a2a2a;
+  --accent:   #6366f1;
+  --accent2:  #8b5cf6;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--obsidian);
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  cursor: none;
+  min-height: 100vh;
+}
+
+/* ── Custom Cursor ─────────────────────────────── */
+.c-dot {
+  position: fixed; top: 0; left: 0;
+  width: 6px; height: 6px;
+  background: #fff; border-radius: 50%;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%, -50%);
+}
+.c-ring {
+  position: fixed; top: 0; left: 0;
+  width: 32px; height: 32px;
+  border: 1px solid rgba(255,255,255,.25); border-radius: 50%;
+  pointer-events: none; z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: width .2s, height .2s, border-color .2s;
+}
+.c-ring.big { width: 52px; height: 52px; border-color: rgba(99,102,241,.6); }
+
+/* ── Background Layers ─────────────────────────── */
+#bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+#spotlight {
+  position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  background: radial-gradient(650px circle at var(--mx,50%) var(--my,50%),
+    rgba(99,102,241,.05), transparent 60%);
+}
+.scanlines {
+  position: fixed; inset: 0; z-index: 2; pointer-events: none;
+  background: repeating-linear-gradient(0deg,
+    transparent, transparent 2px,
+    rgba(0,0,0,.04) 2px, rgba(0,0,0,.04) 4px);
+}
+.wrap { position: relative; z-index: 3; }
+
+/* ── Typography ────────────────────────────────── */
+.mono { font-family: 'Share Tech Mono', monospace; }
+#system-time { font-variant-numeric: tabular-nums; }
+
+/* ── Glitch Effect ─────────────────────────────── */
+.glitch { position: relative; display: inline-block; }
+.glitch::before, .glitch::after {
+  content: attr(data-text); position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%; opacity: 0;
+}
+.glitch::before { color: #f0f; animation: gb 7s infinite; }
+.glitch::after  { color: #0ff; animation: ga 7s infinite; }
+@keyframes gb {
+  0%,88%,100% { opacity:0; transform:translate(0); }
+  90% { opacity:.7; transform:translate(-2px,1px); clip-path:polygon(0 0,100% 0,100% 35%,0 35%); }
+  92% { opacity:0; }
+  94% { opacity:.5; transform:translate(2px,-1px); clip-path:polygon(0 65%,100% 65%,100% 80%,0 80%); }
+  96% { opacity:0; }
+}
+@keyframes ga {
+  0%,89%,100% { opacity:0; transform:translate(0); }
+  91% { opacity:.6; transform:translate(2px,-1px); clip-path:polygon(0 40%,100% 40%,100% 60%,0 60%); }
+  93% { opacity:0; }
+  95% { opacity:.5; transform:translate(-2px,1px); clip-path:polygon(0 20%,100% 20%,100% 40%,0 40%); }
+  97% { opacity:0; }
+}
+
+/* ── Nexus Card (rotating border on hover) ─────── */
+@property --ang { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+
+.nexus-card {
+  position: relative;
+  border: 1px solid var(--border);
+  background: rgba(10,10,12,.85);
+  border-radius: .5rem;
+  transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+  transform-style: preserve-3d;
+  will-change: transform;
+  overflow: hidden;
+  text-decoration: none;
+  color: #fff;
+  display: block;
+}
+.nexus-card::after {
+  content: '';
+  position: absolute; inset: -1px;
+  border-radius: inherit;
+  background: conic-gradient(from var(--ang), transparent 70%,
+    rgba(99,102,241,.6) 80%, rgba(139,92,246,.6) 90%, transparent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  padding: 1px;
+  opacity: 0;
+  transition: opacity .3s;
+  animation: spin-border 3s linear infinite paused;
+}
+.nexus-card:hover { border-color: transparent; box-shadow: 0 0 30px rgba(99,102,241,.08), 0 20px 40px rgba(0,0,0,.5); }
+.nexus-card:hover::after { opacity: 1; animation-play-state: running; }
+@keyframes spin-border { to { --ang: 360deg; } }
+
+.card-icon { transition: color .3s, filter .3s, transform .3s; }
+.nexus-card:hover .card-icon {
+  color: #a5b4fc;
+  filter: drop-shadow(0 0 8px rgba(99,102,241,.6));
+  transform: scale(1.15);
+}
+
+/* ── Instagram Pill ────────────────────────────── */
+.insta-pill { transition: background .2s, transform .2s; text-decoration: none; color: #fff; }
+.insta-pill:hover { background: rgba(30,30,32,1); transform: scale(1.03); }
+
+/* ── Back Link ─────────────────────────────────── */
+.back-link {
+  display: inline-flex; align-items: center; gap: .5rem;
+  color: #444; font-size: .7rem; text-decoration: none;
+  font-family: 'Share Tech Mono', monospace;
+  text-transform: uppercase; letter-spacing: .15em;
+  transition: color .2s;
+}
+.back-link:hover { color: #a5b4fc; }
+
+/* ── CTA Button ────────────────────────────────── */
+.btn-nexus {
+  position: relative; overflow: hidden;
+  background: #fff; color: #000;
+  transition: transform .2s ease, box-shadow .3s ease;
+  text-decoration: none; display: inline-flex; align-items: center;
+}
+.btn-nexus::before {
+  content: '';
+  position: absolute; top: 50%; left: 50%;
+  width: 0; height: 0;
+  background: rgba(99,102,241,.25); border-radius: 50%;
+  transform: translate(-50%,-50%);
+  transition: width .5s ease, height .5s ease;
+}
+.btn-nexus:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(255,255,255,.18); }
+.btn-nexus:hover::before { width: 350px; height: 350px; }
+.btn-nexus .lbl { position: relative; z-index: 1; }
+
+/* ── Search ────────────────────────────────────── */
+input::placeholder { color: #333; }
+.search-glow {
+  position: absolute; inset: -1px; border-radius: .375rem;
+  background: linear-gradient(135deg, rgba(99,102,241,.4), rgba(139,92,246,.4));
+  opacity: 0; filter: blur(6px); pointer-events: none; transition: opacity .3s;
+}
+input:focus { outline: none !important; border-color: rgba(99,102,241,.5) !important; }
+input:focus ~ .search-glow { opacity: 1; }
+
+/* ── Status Dot Pulse ──────────────────────────── */
+.pulse { animation: pulse-anim 2.5s ease infinite; }
+@keyframes pulse-anim {
+  0%,100% { opacity:1; box-shadow: 0 0 0 0 rgba(52,211,153,.4); }
+  50%      { opacity:.5; box-shadow: 0 0 0 4px rgba(52,211,153,0); }
+}
+
+/* ── Ticker Bar ────────────────────────────────── */
+.ticker-wrap { overflow: hidden; border-top: 1px solid #111; border-bottom: 1px solid #111; }
+.ticker-track {
+  display: flex; gap: 4rem; white-space: nowrap;
+  animation: ticker 22s linear infinite;
+}
+@keyframes ticker { from { transform:translateX(0); } to { transform:translateX(-50%); } }
+
+/* ── Entry Animations ──────────────────────────── */
+.fade-up { opacity:0; transform:translateY(24px); animation: fadeup .7s ease forwards; }
+@keyframes fadeup { to { opacity:1; transform:translateY(0); } }
+.d1{animation-delay:.05s} .d2{animation-delay:.15s} .d3{animation-delay:.28s}
+.d4{animation-delay:.42s} .d5{animation-delay:.56s} .d6{animation-delay:.70s} .d7{animation-delay:.84s}
+
+/* ── Scrollbar ─────────────────────────────────── */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--obsidian); }
+::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 2px; }
+
+/* ── Scroll-to-top button ──────────────────────── */
+#scroll-top {
+  position: fixed; bottom: 1.5rem; right: 1.5rem;
+  width: 36px; height: 36px;
+  border: 1px solid #2a2a2a; border-radius: .375rem;
+  background: rgba(10,10,12,.9);
+  display: flex; align-items: center; justify-content: center;
+  cursor: none; z-index: 100;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity .3s, transform .3s, border-color .2s;
+  color: #555; text-decoration: none; font-size: .65rem;
+}
+#scroll-top.visible { opacity: 1; transform: translateY(0); }
+#scroll-top:hover { border-color: #555; color: #fff; }
+
+/* ── Mobile: disable custom cursor ─────────────── */
+@media (hover: none) {
+  body { cursor: auto; }
+  .c-dot, .c-ring { display: none; }
+}

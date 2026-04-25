@@ -3,120 +3,16 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>NEXUS HUB | MINIMAL</title>
+<title>NEXUS HUB</title>
 <link href="./manifest.json" rel="manifest"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
+<link rel="icon" type="image/png" href="./favicon.png"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="nexus-base.css" rel="stylesheet"/>
 <style>
-  :root {
-    --obsidian: #0a0a0c;
-    --border: #2a2a2a;
-    --accent: #6366f1;
-    --accent2: #8b5cf6;
-  }
-
-  *, *::before, *::after { box-sizing: border-box; }
-
-  body {
-    background-color: var(--obsidian);
-    color: #fff;
-    font-family: 'Inter', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
-    cursor: none;
-  }
-
-  /* ── Custom Cursor ─────────────────────────────────────── */
-  .c-dot {
-    position: fixed; top: 0; left: 0;
-    width: 6px; height: 6px;
-    background: #fff;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9999;
-    transform: translate(-50%, -50%);
-  }
-  .c-ring {
-    position: fixed; top: 0; left: 0;
-    width: 32px; height: 32px;
-    border: 1px solid rgba(255,255,255,0.25);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9998;
-    transform: translate(-50%, -50%);
-    transition: width .2s, height .2s, border-color .2s;
-  }
-  .c-ring.big {
-    width: 52px; height: 52px;
-    border-color: rgba(99,102,241,.6);
-  }
-
-  /* ── Background canvas ─────────────────────────────────── */
-  #bg {
-    position: fixed; inset: 0;
-    z-index: 0;
-    pointer-events: none;
-  }
-
-  /* ── Spotlight ─────────────────────────────────────────── */
-  #spotlight {
-    position: fixed; inset: 0;
-    z-index: 1;
-    pointer-events: none;
-    background: radial-gradient(650px circle at var(--mx,50%) var(--my,50%),
-      rgba(99,102,241,.05), transparent 60%);
-  }
-
-  /* ── Scanlines ─────────────────────────────────────────── */
-  .scanlines {
-    position: fixed; inset: 0;
-    z-index: 2;
-    pointer-events: none;
-    background: repeating-linear-gradient(
-      0deg, transparent, transparent 2px,
-      rgba(0,0,0,.04) 2px, rgba(0,0,0,.04) 4px
-    );
-  }
-
-  /* ── Content wrapper ───────────────────────────────────── */
-  .wrap { position: relative; z-index: 3; }
-
-  .mono { font-family: 'Share Tech Mono', monospace; }
-
-  /* ── Glitch title ──────────────────────────────────────── */
-  .glitch { position: relative; display: inline-block; }
-  .glitch::before, .glitch::after {
-    content: attr(data-text);
-    position: absolute; top: 0; left: 0;
-    width: 100%; height: 100%;
-    opacity: 0;
-  }
-  .glitch::before {
-    color: #f0f;
-    animation: gb 7s infinite;
-  }
-  .glitch::after {
-    color: #0ff;
-    animation: ga 7s infinite;
-  }
-  @keyframes gb {
-    0%,88%,100% { opacity:0; transform:translate(0); }
-    90% { opacity:.7; transform:translate(-2px,1px); clip-path:polygon(0 0,100% 0,100% 35%,0 35%); }
-    92% { opacity:0; }
-    94% { opacity:.5; transform:translate(2px,-1px); clip-path:polygon(0 65%,100% 65%,100% 80%,0 80%); }
-    96% { opacity:0; }
-  }
-  @keyframes ga {
-    0%,89%,100% { opacity:0; transform:translate(0); }
-    91% { opacity:.6; transform:translate(2px,-1px); clip-path:polygon(0 40%,100% 40%,100% 60%,0 60%); }
-    93% { opacity:0; }
-    95% { opacity:.5; transform:translate(-2px,1px); clip-path:polygon(0 20%,100% 20%,100% 40%,0 40%); }
-    97% { opacity:0; }
-  }
-
-  /* ── Hero shimmer ──────────────────────────────────────── */
+  /* ── Hero shimmer title ────────────────────── */
   .hero-title {
     background: linear-gradient(120deg, #fff 0%, #999 30%, #fff 50%, #777 80%, #fff 100%);
     background-size: 250% 250%;
@@ -127,175 +23,22 @@
   }
   @keyframes shimmer {
     0%,100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-  }
-
-  /* ── Nexus cards ───────────────────────────────────────── */
-  @property --ang {
-    syntax: '<angle>';
-    initial-value: 0deg;
-    inherits: false;
-  }
-  .nexus-card {
-    position: relative;
-    border: 1px solid var(--border);
-    background: rgba(10,10,12,.85);
-    border-radius: .5rem;
-    transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
-    transform-style: preserve-3d;
-    will-change: transform;
-    overflow: hidden;
-  }
-  .nexus-card::after {
-    content: '';
-    position: absolute; inset: -1px;
-    border-radius: inherit;
-    background: conic-gradient(from var(--ang), transparent 70%,
-      rgba(99,102,241,.6) 80%, rgba(139,92,246,.6) 90%, transparent);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    padding: 1px;
-    opacity: 0;
-    transition: opacity .3s ease;
-    animation: spin-border 3s linear infinite paused;
-  }
-  .nexus-card:hover {
-    border-color: transparent;
-    box-shadow: 0 0 30px rgba(99,102,241,.08), 0 20px 40px rgba(0,0,0,.5);
-  }
-  .nexus-card:hover::after {
-    opacity: 1;
-    animation-play-state: running;
-  }
-  @keyframes spin-border {
-    to { --ang: 360deg; }
-  }
-
-  /* icon glow on card hover */
-  .nexus-card:hover .card-icon {
-    color: #a5b4fc;
-    filter: drop-shadow(0 0 8px rgba(99,102,241,.6));
-    transform: scale(1.15);
-    transition: color .3s, filter .3s, transform .3s;
-  }
-  .card-icon {
-    transition: color .3s, filter .3s, transform .3s;
-  }
-
-  /* ── CTA button ────────────────────────────────────────── */
-  .btn-wow {
-    position: relative;
-    background: #fff;
-    color: #000;
-    overflow: hidden;
-    transition: transform .2s ease, box-shadow .3s ease;
-  }
-  .btn-wow::before {
-    content: '';
-    position: absolute;
-    top: 50%; left: 50%;
-    width: 0; height: 0;
-    background: rgba(99,102,241,.25);
-    border-radius: 50%;
-    transform: translate(-50%,-50%);
-    transition: width .5s ease, height .5s ease;
-  }
-  .btn-wow:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(255,255,255,.18); }
-  .btn-wow:hover::before { width: 350px; height: 350px; }
-  .btn-wow .label { position: relative; z-index: 1; }
-
-  /* ── Instagram pill ────────────────────────────────────── */
-  .insta-pill {
-    transition: background .2s ease, transform .2s ease;
-  }
-  .insta-pill:hover {
-    background: rgba(30,30,32,1);
-    transform: scale(1.03);
-  }
-
-  /* ── Search ────────────────────────────────────────────── */
-  input::placeholder { color: #333; }
-  .search-glow {
-    position: absolute; inset: -1px;
-    border-radius: .375rem;
-    background: linear-gradient(135deg, rgba(99,102,241,.4), rgba(139,92,246,.4));
-    opacity: 0;
-    filter: blur(6px);
-    pointer-events: none;
-    transition: opacity .3s ease;
-  }
-  input:focus { outline: none !important; border-color: rgba(99,102,241,.5) !important; }
-  input:focus ~ .search-glow { opacity: 1; }
-
-  /* ── Pulse status dot ──────────────────────────────────── */
-  .pulse {
-    animation: pulse 2.5s ease infinite;
-  }
-  @keyframes pulse {
-    0%,100% { opacity:1; box-shadow: 0 0 0 0 rgba(52,211,153,.4); }
-    50% { opacity:.5; box-shadow: 0 0 0 4px rgba(52,211,153,0); }
-  }
-
-  /* ── Ticker ────────────────────────────────────────────── */
-  .ticker-wrap {
-    overflow: hidden;
-    border-top: 1px solid #111;
-    border-bottom: 1px solid #111;
-  }
-  .ticker-track {
-    display: flex;
-    gap: 4rem;
-    white-space: nowrap;
-    animation: ticker 22s linear infinite;
-  }
-  @keyframes ticker {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
-  }
-
-  /* ── Entry animations ──────────────────────────────────── */
-  .fade-up {
-    opacity: 0;
-    transform: translateY(24px);
-    animation: fadeup .7s ease forwards;
-  }
-  @keyframes fadeup { to { opacity:1; transform:translateY(0); } }
-  .d1 { animation-delay:.05s; }
-  .d2 { animation-delay:.15s; }
-  .d3 { animation-delay:.28s; }
-  .d4 { animation-delay:.42s; }
-  .d5 { animation-delay:.56s; }
-  .d6 { animation-delay:.70s; }
-  .d7 { animation-delay:.84s; }
-
-  /* ── Scrollbar ─────────────────────────────────────────── */
-  ::-webkit-scrollbar { width: 3px; }
-  ::-webkit-scrollbar-track { background: var(--obsidian); }
-  ::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 2px; }
-
-  /* ── System time ───────────────────────────────────────── */
-  #system-time { font-variant-numeric: tabular-nums; }
-
-  /* ── Mobile: hide cursor ───────────────────────────────── */
-  @media (hover: none) {
-    body { cursor: auto; }
-    .c-dot, .c-ring { display: none; }
+    50%      { background-position: 100% 50%; }
   }
 </style>
 </head>
-<body class="flex flex-col items-center min-h-screen">
+<body class="flex flex-col items-center">
 
-<!-- Layers -->
 <canvas id="bg"></canvas>
 <div id="spotlight"></div>
 <div class="scanlines"></div>
 <div class="c-dot" id="cdot"></div>
 <div class="c-ring" id="cring"></div>
+<a href="#" id="scroll-top"><i class="fas fa-arrow-up"></i></a>
 
 <div class="wrap w-full flex flex-col items-center">
 
-  <!-- ── Header ─────────────────────────────────────────── -->
+  <!-- Header -->
   <header class="w-full max-w-6xl px-6 py-8 flex justify-between items-center fade-up d1">
     <div class="flex items-center gap-4">
       <h1 class="text-xl font-bold tracking-tight glitch" data-text="NEXUS HUB">
@@ -304,70 +47,59 @@
       <div class="hidden md:block h-4 w-px bg-[#222]"></div>
       <span class="hidden md:block text-[10px] text-zinc-600 mono uppercase tracking-widest" id="system-time">00:00:00</span>
     </div>
-
-    <!-- Instagram pill -->
     <a class="insta-pill flex items-center gap-3 px-3 py-1.5 rounded-full border border-[#222]"
        href="https://www.instagram.com/merickn/" target="_blank">
       <div class="text-right">
         <p class="text-[10px] font-semibold leading-none text-white">@merickn</p>
         <p class="text-[9px] text-zinc-500 leading-none mt-0.5">1 234 abonnés</p>
       </div>
-      <img alt="Profile"
-        class="w-6 h-6 rounded-full object-cover"
+      <img alt="Profile" class="w-6 h-6 rounded-full object-cover"
         src="https://lh3.googleusercontent.com/aida-public/AB6AXuDr64yMXYw0xB7ANsOhknluhk80IuEfnWigXyg7LOUsjqVpCyLkTeXxP28mRuN4uEoqfkrD5A_1vB0qQx3e5gOVPNR0nfBUlECHeN2m-Al1h_YKfWTs-MvgP2usQWCENZDxjBFnWXNaVc3DQG6VPh_7RGWFwGXr2nqTpwLorGOxDBwVRTMmpQVWtSHq9hDBjERH7FDvwJVF4TtAsp7B--SwIowDYhEIeV8NLu3ok10J8D2zTa9bfBOY9zmz0LC9Nd9YS6HD-s4G82a_"/>
     </a>
   </header>
 
-  <!-- ── Ticker ─────────────────────────────────────────── -->
+  <!-- Ticker -->
   <div class="ticker-wrap w-full py-2 fade-up d2">
     <div class="ticker-track mono text-[9px] uppercase tracking-widest text-zinc-700">
-      <!-- doubled for seamless loop -->
-      <span>NEXUS HUB</span><span>◆</span>
-      <span>Core Stable</span><span>◆</span>
-      <span>Uptime 99.9%</span><span>◆</span>
-      <span>Neural Assistant</span><span>◆</span>
-      <span>Precision V4</span><span>◆</span>
-      <span>2026</span><span>◆</span>
-      <span>NEXUS HUB</span><span>◆</span>
-      <span>Core Stable</span><span>◆</span>
-      <span>Uptime 99.9%</span><span>◆</span>
-      <span>Neural Assistant</span><span>◆</span>
-      <span>Precision V4</span><span>◆</span>
-      <span>2026</span><span>◆</span>
+      <span>NEXUS HUB</span><span>◆</span><span>Core Stable</span><span>◆</span>
+      <span>Uptime 99.9%</span><span>◆</span><span>Neural Assistant</span><span>◆</span>
+      <span>Precision V4</span><span>◆</span><span>2026</span><span>◆</span>
+      <span>NEXUS HUB</span><span>◆</span><span>Core Stable</span><span>◆</span>
+      <span>Uptime 99.9%</span><span>◆</span><span>Neural Assistant</span><span>◆</span>
+      <span>Precision V4</span><span>◆</span><span>2026</span><span>◆</span>
     </div>
   </div>
 
   <main class="w-full max-w-4xl px-6 py-16 space-y-20">
 
-    <!-- ── Hero ───────────────────────────────────────────── -->
+    <!-- Hero -->
     <section class="text-center space-y-8">
       <div class="space-y-5 fade-up d2">
         <h2 class="text-5xl md:text-7xl font-bold tracking-tight hero-title">Nexus Social</h2>
         <p class="text-zinc-500 text-lg max-w-lg mx-auto font-light leading-relaxed" id="subtitle"></p>
       </div>
       <div class="fade-up d3">
-        <a class="btn-wow inline-flex items-center px-8 py-3 rounded-md text-xs font-bold uppercase tracking-widest"
+        <a class="btn-nexus px-8 py-3 rounded-md text-xs font-bold uppercase tracking-widest"
            href="https://nexus-social-3ta5.onrender.com/" target="_blank">
-          <span class="label">Accéder</span>
+          <span class="lbl">Accéder</span>
         </a>
       </div>
     </section>
 
-    <!-- ── Search ─────────────────────────────────────────── -->
+    <!-- Search -->
     <section class="max-w-md mx-auto fade-up d4">
       <div class="relative">
         <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-zinc-600 text-xs z-10"></i>
-        <input
-          class="w-full py-3 pl-10 pr-6 bg-transparent border border-[#222] rounded-md text-xs tracking-wide text-white relative z-10"
-          id="searchInput" placeholder="Rechercher un service…" type="text"/>
+        <input class="w-full py-3 pl-10 pr-6 bg-transparent border border-[#222] rounded-md text-xs tracking-wide text-white relative z-10"
+               id="searchInput" placeholder="Rechercher un service… (ou /)" type="text"/>
         <div class="search-glow"></div>
       </div>
     </section>
 
-    <!-- ── Modules Grid ────────────────────────────────────── -->
+    <!-- Modules -->
     <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 fade-up d5">
 
-      <a class="nexus-card p-6 flex flex-col items-center text-center space-y-4"
+      <a class="nexus-card tilt-card p-6 flex flex-col items-center text-center space-y-4"
          href="https://nexusproject2077.github.io/93003/">
         <i class="fas fa-brain card-icon text-zinc-500 text-xl"></i>
         <div>
@@ -376,7 +108,7 @@
         </div>
       </a>
 
-      <a class="nexus-card p-6 flex flex-col items-center text-center space-y-4"
+      <a class="nexus-card tilt-card p-6 flex flex-col items-center text-center space-y-4"
          href="https://nexus-calculator.onrender.com/">
         <i class="fas fa-calculator card-icon text-zinc-500 text-xl"></i>
         <div>
@@ -385,7 +117,7 @@
         </div>
       </a>
 
-      <a class="nexus-card p-6 flex flex-col items-center text-center space-y-4"
+      <a class="nexus-card tilt-card p-6 flex flex-col items-center text-center space-y-4"
          href="archive.html">
         <i class="fas fa-folder-open card-icon text-zinc-500 text-xl"></i>
         <div>
@@ -394,7 +126,7 @@
         </div>
       </a>
 
-      <a class="nexus-card p-6 flex flex-col items-center text-center space-y-4"
+      <a class="nexus-card tilt-card p-6 flex flex-col items-center text-center space-y-4"
          href="blog.html">
         <i class="fas fa-feather card-icon text-zinc-500 text-xl"></i>
         <div>
@@ -405,7 +137,7 @@
 
     </section>
 
-    <!-- ── Shop placeholder ────────────────────────────────── -->
+    <!-- Shop -->
     <section class="fade-up d6">
       <div class="border border-[#1a1a1a] border-dashed rounded-lg p-12 text-center" id="myShop">
         <p class="text-zinc-700 text-[10px] mono uppercase tracking-widest">Store LCSL Inactif</p>
@@ -414,8 +146,7 @@
 
   </main>
 
-  <!-- ── Footer ─────────────────────────────────────────── -->
-  <footer class="w-full max-w-6xl px-6 py-10 mt-4 border-t border-[#111] flex flex-col md:flex-row justify-between items-center gap-6 fade-up d7">
+  <footer class="w-full max-w-6xl px-6 py-10 mt-4 border-t border-[#111] flex flex-col md:flex-row justify-between items-center gap-6">
     <p class="text-[10px] tracking-[.2em] text-zinc-600 uppercase">
       Nexus-Hub <span class="text-zinc-800 px-2">|</span> 2026
     </p>
@@ -428,141 +159,33 @@
     </div>
   </footer>
 
-</div><!-- /wrap -->
+</div>
 
+<script src="nexus-shared.js"></script>
 <script>
-// ── Clock ────────────────────────────────────────────────────────
-function tick() {
-  document.getElementById('system-time').textContent =
-    new Date().toLocaleTimeString('fr-FR', { hour12: false });
-}
-setInterval(tick, 1000); tick();
-
-// ── Typewriter subtitle ──────────────────────────────────────────
+// ── Typewriter subtitle ─────────────────────────
 (function () {
-  const el = document.getElementById('subtitle');
+  const el  = document.getElementById('subtitle');
   const txt = "L'épicentre de l'intelligence collective. Connectez vos modules et expandez votre réseau.";
   let i = 0;
   function type() {
-    if (i < txt.length) {
-      el.textContent += txt[i++];
-      setTimeout(type, 28 + Math.random() * 20);
-    }
+    if (i < txt.length) { el.textContent += txt[i++]; setTimeout(type, 26 + Math.random() * 18); }
   }
-  setTimeout(type, 600);
+  setTimeout(type, 500);
 })();
 
-// ── Custom cursor ────────────────────────────────────────────────
-const dot = document.getElementById('cdot');
-const ring = document.getElementById('cring');
-let mx = window.innerWidth/2, my = window.innerHeight/2;
-let rx = mx, ry = my;
-
-document.addEventListener('mousemove', e => {
-  mx = e.clientX; my = e.clientY;
-  dot.style.left = mx + 'px';
-  dot.style.top  = my + 'px';
-  document.getElementById('spotlight').style.setProperty('--mx', mx + 'px');
-  document.getElementById('spotlight').style.setProperty('--my', my + 'px');
-});
-
-(function lerpRing() {
-  rx += (mx - rx) * .1;
-  ry += (my - ry) * .1;
-  ring.style.left = rx + 'px';
-  ring.style.top  = ry + 'px';
-  requestAnimationFrame(lerpRing);
-})();
-
-document.querySelectorAll('a,button,input').forEach(el => {
-  el.addEventListener('mouseenter', () => ring.classList.add('big'));
-  el.addEventListener('mouseleave', () => ring.classList.remove('big'));
-});
-
-// ── Particle network canvas ──────────────────────────────────────
-const cv = document.getElementById('bg');
-const cx = cv.getContext('2d');
-let W, H, pts = [];
-
-function resize() {
-  W = cv.width  = window.innerWidth;
-  H = cv.height = window.innerHeight;
-}
-window.addEventListener('resize', resize); resize();
-
-class P {
-  constructor() { this.init(); }
-  init() {
-    this.x  = Math.random() * W;
-    this.y  = Math.random() * H;
-    this.vx = (Math.random() - .5) * .25;
-    this.vy = (Math.random() - .5) * .25;
-    this.r  = Math.random() * 1.2 + .4;
-    this.a  = Math.random() * .35 + .08;
-  }
-  step() {
-    this.x += this.vx;
-    this.y += this.vy;
-    if (this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.init();
-  }
-  draw() {
-    cx.beginPath();
-    cx.arc(this.x, this.y, this.r, 0, Math.PI*2);
-    cx.fillStyle = `rgba(180,180,255,${this.a})`;
-    cx.fill();
-  }
-}
-
-for (let i = 0; i < 90; i++) pts.push(new P());
-
-function frame() {
-  cx.clearRect(0, 0, W, H);
-  for (let i = 0; i < pts.length; i++) {
-    pts[i].step(); pts[i].draw();
-    for (let j = i+1; j < pts.length; j++) {
-      const dx = pts[i].x - pts[j].x;
-      const dy = pts[i].y - pts[j].y;
-      const d  = Math.sqrt(dx*dx + dy*dy);
-      if (d < 110) {
-        cx.beginPath();
-        cx.moveTo(pts[i].x, pts[i].y);
-        cx.lineTo(pts[j].x, pts[j].y);
-        cx.strokeStyle = `rgba(99,102,241,${.12*(1-d/110)})`;
-        cx.lineWidth = .5;
-        cx.stroke();
-      }
-    }
-  }
-  requestAnimationFrame(frame);
-}
-frame();
-
-// ── 3-D card tilt ────────────────────────────────────────────────
-document.querySelectorAll('.nexus-card').forEach(card => {
-  card.addEventListener('mousemove', e => {
-    const r = card.getBoundingClientRect();
-    const x = (e.clientX - r.left) / r.width  - .5;
-    const y = (e.clientY - r.top)  / r.height - .5;
-    card.style.transform =
-      `perspective(700px) rotateX(${-y*9}deg) rotateY(${x*9}deg) translateY(-4px)`;
-  });
-  card.addEventListener('mouseleave', () => { card.style.transform = ''; });
-});
-
-// ── Search filter ────────────────────────────────────────────────
+// ── Search filter ───────────────────────────────
 document.getElementById('searchInput').addEventListener('input', function () {
   const q = this.value.toLowerCase();
   document.querySelectorAll('.nexus-card').forEach(c => {
-    c.style.display = c.textContent.toLowerCase().includes(q) ? 'flex' : 'none';
+    c.style.display = c.textContent.toLowerCase().includes(q) ? '' : 'none';
   });
 });
 
-// ── Shop config ──────────────────────────────────────────────────
+// ── Shop config ─────────────────────────────────
 var spread_shop_config = {
-  shopName: 'LCSL',
-  locale: 'fr_FR',
-  prefix: 'https://fluxstore.myspreadshop.net/',
-  baseId: 'myShop'
+  shopName: 'LCSL', locale: 'fr_FR',
+  prefix: 'https://fluxstore.myspreadshop.net/', baseId: 'myShop'
 };
 </script>
 <script src="https://LCSL.myspreadshop.fr/shopfiles/shopclient/shopclient.nocache.js" type="text/javascript"></script>

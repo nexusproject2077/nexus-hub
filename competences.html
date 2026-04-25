@@ -1,115 +1,345 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Archive Personnelle - Compétences</title>
-    
-    <link rel="manifest" href="./manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="apple-touch-icon" href="./icon-192.jpg"> 
-    
-    <link rel="stylesheet" href="competences.css">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    
-    <link rel="icon" type="image/png" href="./favicon.png"> 
-    <link rel="shortcut icon" type="image/png" href="./favicon.png">
-    
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> 
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NEXUS HUB | Compétences</title>
+<link href="./manifest.json" rel="manifest"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="nexus-base.css" rel="stylesheet"/>
+<style>
+  /* ── Progress bar ───────────────────────── */
+  .skill-bar-wrap {
+    height: 3px;
+    background: #1a1a1a;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .skill-bar {
+    height: 100%;
+    border-radius: 2px;
+    width: 0;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+    transition: width 1s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* ── Skill row ──────────────────────────── */
+  .skill-row {
+    border: 1px solid var(--border);
+    background: rgba(10,10,12,.85);
+    border-radius: .5rem;
+    padding: 1rem 1.25rem;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .skill-row:hover {
+    border-color: #3a3a3a;
+    box-shadow: 0 4px 20px rgba(0,0,0,.3);
+  }
+  .skill-row:hover .skill-icon-sm {
+    color: #a5b4fc;
+    filter: drop-shadow(0 0 6px rgba(99,102,241,.5));
+  }
+  .skill-icon-sm { transition: color .2s, filter .2s; }
+
+  /* ── Soft skill pill ────────────────────── */
+  .soft-pill {
+    border: 1px solid var(--border);
+    background: rgba(10,10,12,.85);
+    border-radius: .375rem;
+    padding: .6rem 1rem;
+    display: flex; align-items: center; gap: .625rem;
+    transition: border-color .2s, background .2s, transform .2s;
+  }
+  .soft-pill:hover {
+    border-color: rgba(99,102,241,.3);
+    background: rgba(99,102,241,.05);
+    transform: translateY(-2px);
+  }
+
+  /* ── Section divider ────────────────────── */
+  .sec-label {
+    display: flex; align-items: center; gap: .75rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: .65rem; text-transform: uppercase;
+    letter-spacing: .2em; color: #555;
+  }
+  .sec-label::after { content: ''; flex: 1; height: 1px; background: #1a1a1c; }
+
+  /* ── Level badge ────────────────────────── */
+  .lvl-expert      { color: #a5b4fc; }
+  .lvl-avance      { color: #86efac; }
+  .lvl-intermediaire { color: #fcd34d; }
+  .lvl-basique     { color: #9ca3af; }
+</style>
 </head>
-<body>
-    
-    <div class="background-animation"></div> 
-    
-    <header>
-        <p id="system-time">00:00:00</p>
-        
-        <h1><span class="gradient-text">COMPETENCES</span></h1>
-        <p class="subtitle">Vos compétences techniques et humaines.</p>
+<body class="flex flex-col items-center">
 
-        <div class="back-button-container">
-            <a href="archive.html" class="futuristic-shop-button">
-                <i class="fas fa-arrow-left"></i> Retour à l'Archive
-            </a>
-        </div>
-    </header>
-<main>
-    <section id="skills-section">
-        <h2 class="section-title">Compétences Techniques</h2>
-        <div class="tech-skills-grid">
-            
-            <div class="skill-hexagon" data-level="JavaSaiB5">
-                <i class="fab fa-python skill-icon"></i>
-                <span class="skill-name">Python</span>
-            </div>
+<canvas id="bg"></canvas>
+<div id="spotlight"></div>
+<div class="scanlines"></div>
+<div class="c-dot" id="cdot"></div>
+<div class="c-ring" id="cring"></div>
+<a href="#" id="scroll-top"><i class="fas fa-arrow-up"></i></a>
 
-            <div class="skill-hexagon" data-level="Avancé">
-                <i class="fab fa-js skill-icon"></i>
-                <span class="skill-name">JS</span>
-            </div>
+<div class="wrap w-full flex flex-col items-center">
 
-            <div class="skill-hexagon" data-level="Avancé">
-                <i class="fab fa-html5 skill-icon"></i>
-                <span class="skill-name">HTML5</span>
-            </div>
+  <!-- Header -->
+  <header class="w-full max-w-6xl px-6 py-8 flex justify-between items-center fade-up d1">
+    <div class="flex items-center gap-4">
+      <a href="index.html">
+        <h1 class="text-xl font-bold tracking-tight glitch" data-text="NEXUS HUB">
+          NEXUS <span class="font-light text-zinc-500">HUB</span>
+        </h1>
+      </a>
+      <div class="hidden md:block h-4 w-px bg-[#222]"></div>
+      <span class="hidden md:block text-[10px] text-zinc-600 mono uppercase tracking-widest" id="system-time">00:00:00</span>
+    </div>
+    <a class="insta-pill flex items-center gap-3 px-3 py-1.5 rounded-full border border-[#222]"
+       href="https://www.instagram.com/merickn/" target="_blank">
+      <div class="text-right">
+        <p class="text-[10px] font-semibold leading-none text-white">@merickn</p>
+        <p class="text-[9px] text-zinc-500 leading-none mt-0.5">1 234 abonnés</p>
+      </div>
+      <img alt="Profile" class="w-6 h-6 rounded-full object-cover"
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDr64yMXYw0xB7ANsOhknluhk80IuEfnWigXyg7LOUsjqVpCyLkTeXxP28mRuN4uEoqfkrD5A_1vB0qQx3e5gOVPNR0nfBUlECHeN2m-Al1h_YKfWTs-MvgP2usQWCENZDxjBFnWXNaVc3DQG6VPh_7RGWFwGXr2nqTpwLorGOxDBwVRTMmpQVWtSHq9hDBjERH7FDvwJVF4TtAsp7B--SwIowDYhEIeV8NLu3ok10J8D2zTa9bfBOY9zmz0LC9Nd9YS6HD-s4G82a_"/>
+    </a>
+  </header>
 
-            <div class="skill-hexagon" data-level="Avancé">
-                <i class="fab fa-css3-alt skill-icon"></i>
-                <span class="skill-name">CSS3</span>
-            </div>
+  <!-- Ticker -->
+  <div class="ticker-wrap w-full py-2 fade-up d2">
+    <div class="ticker-track mono text-[9px] uppercase tracking-widest text-zinc-700">
+      <span>COMPÉTENCES</span><span>◆</span><span>9 Tech Skills</span><span>◆</span>
+      <span>5 Soft Skills</span><span>◆</span><span>Full-Stack</span><span>◆</span>
+      <span>6 ans d'expérience</span><span>◆</span>
+      <span>COMPÉTENCES</span><span>◆</span><span>9 Tech Skills</span><span>◆</span>
+      <span>5 Soft Skills</span><span>◆</span><span>Full-Stack</span><span>◆</span>
+      <span>6 ans d'expérience</span><span>◆</span>
+    </div>
+  </div>
 
-            <div class="skill-hexagon" data-level="Basique">
-                <i class="fas fa-database skill-icon"></i>
-                <span class="skill-name">SQL</span>
-            </div>
-            
-            <div class="skill-hexagon" data-level="Intermédiaire">
-                <i class="fab fa-git-alt skill-icon"></i>
-                <span class="skill-name">Git</span>
-            </div>
+  <main class="w-full max-w-3xl px-6 py-16 space-y-16">
 
-            <div class="skill-hexagon" data-level="Basique">
-                <i class="fab fa-docker skill-icon"></i>
-                <span class="skill-name">Docker</span>
-            </div>
-
-            </div>
-
-        <h2 class="section-title soft-skills-title">Compétences Humaines (Soft Skills)</h2>
-        <div class="soft-skills-grid">
-            <div class="soft-skill-item">
-                <i class="fas fa-comments soft-skill-icon"></i>
-                <span class="soft-skill-name">Communication</span>
-            </div>
-            <div class="soft-skill-item">
-                <i class="fas fa-lightbulb soft-skill-icon"></i>
-                <span class="soft-skill-name">Résolution de problèmes</span>
-            </div>
-            <div class="soft-skill-item">
-                <i class="fas fa-handshake soft-skill-icon"></i>
-                <span class="soft-skill-name">Travail d'équipe</span>
-            </div>
-            <div class="soft-skill-item">
-                <i class="fas fa-brain soft-skill-icon"></i>
-                <span class="soft-skill-name">Apprentissage rapide</span>
-            </div>
-            <div class="soft-skill-item">
-                <i class="fas fa-shield-alt soft-skill-icon"></i>
-                <span class="soft-skill-name">Rigueur</span>
-            </div>
-        </div>
+    <!-- Page header -->
+    <section class="space-y-2 fade-up d2">
+      <p class="mono text-[10px] uppercase tracking-widest text-zinc-600">Répertoire 02</p>
+      <h2 class="text-3xl md:text-4xl font-bold tracking-tight">Compétences</h2>
+      <p class="text-zinc-500 text-sm font-light">Matrice des langages et protocoles maîtrisés.</p>
     </section>
-</main>
-<footer>
-        <p>Propulsé par <span class="gradient-text">IA-Hub</span> &copy; 2077</p>
-    </footer>
 
-    <script src="app.js"></script>
-    <hr
-        <a href="archive.html">← Retour à l'Archive</a>
-    
+    <!-- Tech Skills -->
+    <section class="space-y-5 fade-up d3">
+      <div class="sec-label">
+        <i class="fas fa-code text-[10px]"></i>
+        Compétences techniques
+      </div>
+
+      <div class="space-y-3" id="tech-skills">
+
+        <div class="skill-row" data-level="92">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2.5">
+              <i class="fab fa-html5 skill-icon-sm text-zinc-500 text-sm w-4 text-center"></i>
+              <span class="text-sm font-medium">HTML5</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="mono text-[10px] lvl-expert">Expert</span>
+              <span class="mono text-[10px] text-zinc-600" data-pct>92%</span>
+            </div>
+          </div>
+          <div class="skill-bar-wrap"><div class="skill-bar"></div></div>
+        </div>
+
+        <div class="skill-row" data-level="88">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2.5">
+              <i class="fab fa-css3-alt skill-icon-sm text-zinc-500 text-sm w-4 text-center"></i>
+              <span class="text-sm font-medium">CSS3</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="mono text-[10px] lvl-expert">Expert</span>
+              <span class="mono text-[10px] text-zinc-600" data-pct>88%</span>
+            </div>
+          </div>
+          <div class="skill-bar-wrap"><div class="skill-bar"></div></div>
+        </div>
+
+        <div class="skill-row" data-level="85">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2.5">
+              <i class="fab fa-js skill-icon-sm text-zinc-500 text-sm w-4 text-center"></i>
+              <span class="text-sm font-medium">JavaScript</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="mono text-[10px] lvl-avance">Avancé</span>
+              <span class="mono text-[10px] text-zinc-600" data-pct>85%</span>
+            </div>
+          </div>
+          <div class="skill-bar-wrap"><div class="skill-bar"></div></div>
+        </div>
+
+        <div class="skill-row" data-level="65">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2.5">
+              <i class="fab fa-php skill-icon-sm text-zinc-500 text-sm w-4 text-center"></i>
+              <span class="text-sm font-medium">PHP</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="mono text-[10px] lvl-intermediaire">Intermédiaire</span>
+              <span class="mono text-[10px] text-zinc-600" data-pct>65%</span>
+            </div>
+          </div>
+          <div class="skill-bar-wrap"><div class="skill-bar"></div></div>
+        </div>
+
+        <div class="skill-row" data-level="62">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2.5">
+              <i class="fab fa-python skill-icon-sm text-zinc-500 text-sm w-4 text-center"></i>
+              <span class="text-sm font-medium">Python</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="mono text-[10px] lvl-intermediaire">Intermédiaire</span>
+              <span class="mono text-[10px] text-zinc-600" data-pct>62%</span>
+            </div>
+          </div>
+          <div class="skill-bar-wrap"><div class="skill-bar"></div></div>
+        </div>
+
+        <div class="skill-row" data-level="70">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2.5">
+              <i class="fab fa-git-alt skill-icon-sm text-zinc-500 text-sm w-4 text-center"></i>
+              <span class="text-sm font-medium">Git</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="mono text-[10px] lvl-intermediaire">Intermédiaire</span>
+              <span class="mono text-[10px] text-zinc-600" data-pct>70%</span>
+            </div>
+          </div>
+          <div class="skill-bar-wrap"><div class="skill-bar"></div></div>
+        </div>
+
+        <div class="skill-row" data-level="55">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2.5">
+              <i class="fas fa-database skill-icon-sm text-zinc-500 text-sm w-4 text-center"></i>
+              <span class="text-sm font-medium">SQL / MySQL</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="mono text-[10px] lvl-basique">Basique+</span>
+              <span class="mono text-[10px] text-zinc-600" data-pct>55%</span>
+            </div>
+          </div>
+          <div class="skill-bar-wrap"><div class="skill-bar"></div></div>
+        </div>
+
+        <div class="skill-row" data-level="45">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2.5">
+              <i class="fas fa-leaf skill-icon-sm text-zinc-500 text-sm w-4 text-center"></i>
+              <span class="text-sm font-medium">MongoDB</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="mono text-[10px] lvl-basique">Basique</span>
+              <span class="mono text-[10px] text-zinc-600" data-pct>45%</span>
+            </div>
+          </div>
+          <div class="skill-bar-wrap"><div class="skill-bar"></div></div>
+        </div>
+
+        <div class="skill-row" data-level="35">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2.5">
+              <i class="fab fa-docker skill-icon-sm text-zinc-500 text-sm w-4 text-center"></i>
+              <span class="text-sm font-medium">Docker</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="mono text-[10px] lvl-basique">Notions</span>
+              <span class="mono text-[10px] text-zinc-600" data-pct>35%</span>
+            </div>
+          </div>
+          <div class="skill-bar-wrap"><div class="skill-bar"></div></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Soft Skills -->
+    <section class="space-y-5 fade-up d5">
+      <div class="sec-label">
+        <i class="fas fa-user text-[10px]"></i>
+        Compétences humaines
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <div class="soft-pill">
+          <i class="fas fa-comments text-zinc-600 text-sm"></i>
+          <span class="text-sm text-zinc-300">Communication</span>
+        </div>
+        <div class="soft-pill">
+          <i class="fas fa-lightbulb text-zinc-600 text-sm"></i>
+          <span class="text-sm text-zinc-300">Résolution de problèmes</span>
+        </div>
+        <div class="soft-pill">
+          <i class="fas fa-handshake text-zinc-600 text-sm"></i>
+          <span class="text-sm text-zinc-300">Travail d'équipe</span>
+        </div>
+        <div class="soft-pill">
+          <i class="fas fa-bolt text-zinc-600 text-sm"></i>
+          <span class="text-sm text-zinc-300">Apprentissage rapide</span>
+        </div>
+        <div class="soft-pill">
+          <i class="fas fa-shield-alt text-zinc-600 text-sm"></i>
+          <span class="text-sm text-zinc-300">Rigueur</span>
+        </div>
+        <div class="soft-pill">
+          <i class="fas fa-map-signs text-zinc-600 text-sm"></i>
+          <span class="text-sm text-zinc-300">Gestion de projet</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Back -->
+    <div class="fade-up d6">
+      <a href="archive.html" class="back-link">
+        <i class="fas fa-arrow-left text-[10px]"></i> Retour à l'archive
+      </a>
+    </div>
+
+  </main>
+
+  <footer class="w-full max-w-6xl px-6 py-10 mt-4 border-t border-[#111] flex flex-col md:flex-row justify-between items-center gap-6">
+    <p class="text-[10px] tracking-[.2em] text-zinc-600 uppercase">
+      Nexus-Hub <span class="text-zinc-800 px-2">|</span> 2026
+    </p>
+    <div class="flex gap-8 text-[9px] mono uppercase tracking-widest text-zinc-700">
+      <span class="flex items-center gap-2">
+        <span class="w-1.5 h-1.5 bg-emerald-600 rounded-full pulse inline-block"></span>
+        Core Stable
+      </span>
+      <span>Uptime 99.9%</span>
+    </div>
+  </footer>
+
+</div>
+
+<script src="nexus-shared.js"></script>
+<script>
+// ── Animate bars on scroll (IntersectionObserver) ──
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const level = parseInt(entry.target.dataset.level, 10);
+      const bar = entry.target.querySelector('.skill-bar');
+      if (bar) bar.style.width = level + '%';
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.2 });
+
+document.querySelectorAll('.skill-row').forEach(row => observer.observe(row));
+</script>
 </body>
 </html>
-
-    
