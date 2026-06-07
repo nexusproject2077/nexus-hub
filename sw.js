@@ -1,5 +1,4 @@
-const CACHE = 'nexus-v3';
-
+const CACHE = 'nexus-v4';
 const ASSETS = [
   './',
   './index.html',
@@ -30,10 +29,30 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  // Pass through external requests (CDN, APIs)
+  // Laisser passer les requêtes externes (CDN, APIs)
   if (!e.request.url.startsWith(self.location.origin)) return;
 
-  e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request))
-  );
+  const isHTML =
+    e.request.mode === 'navigate' ||
+    e.request.destination === 'document' ||
+    e.request.url.endsWith('.html') ||
+    e.request.url.endsWith('/');
+
+  if (isHTML) {
+    // NETWORK-FIRST : toujours la dernière version, cache en secours (hors ligne)
+    e.respondWith(
+      fetch(e.request)
+        .then(res => {
+          const copy = res.clone();
+          caches.open(CACHE).then(c => c.put(e.request, copy));
+          return res;
+        })
+        .catch(() => caches.match(e.request))
+    );
+  } else {
+    // CACHE-FIRST : pour CSS, JS, images (rapide)
+    e.respondWith(
+      caches.match(e.request).then(cached => cached || fetch(e.request))
+    );
+  }
 });
