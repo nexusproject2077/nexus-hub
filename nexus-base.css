@@ -59,6 +59,34 @@ body {
 .mono { font-family: 'Share Tech Mono', monospace; }
 #system-time { font-variant-numeric: tabular-nums; }
 
+/* ── Jēran Logo (rune drawn stroke by stroke) ──── */
+.jeran-logo {
+  width: 30px; height: 30px;
+  flex-shrink: 0;
+  overflow: visible;
+  animation: jeran-glow 3.2s ease-in-out 2.3s infinite;
+}
+.jeran-logo path {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 70;
+  stroke-dashoffset: 70;
+  animation: jeran-draw 1.05s cubic-bezier(.65,0,.35,1) forwards;
+}
+.jeran-logo path.j2 { animation-delay: 1.05s; }
+@keyframes jeran-draw { to { stroke-dashoffset: 0; } }
+@keyframes jeran-glow {
+  0%,100% { filter: drop-shadow(0 0 2px rgba(99,102,241,.35)); }
+  50%     { filter: drop-shadow(0 0 8px rgba(139,92,246,.75)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .jeran-logo { animation: none; }
+  .jeran-logo path { stroke-dashoffset: 0; animation: none; }
+}
+
 /* ── Glitch Effect ─────────────────────────────── */
 .glitch { position: relative; display: inline-block; }
 .glitch::before, .glitch::after {
