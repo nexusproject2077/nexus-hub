@@ -72,8 +72,8 @@ body {
   stroke-width: 6;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-dasharray: 70;
-  stroke-dashoffset: 70;
+  stroke-dasharray: 90;
+  stroke-dashoffset: 90;
   animation: jeran-draw 1.05s cubic-bezier(.65,0,.35,1) forwards;
 }
 .jeran-logo path.j2 { animation-delay: 1.05s; }
