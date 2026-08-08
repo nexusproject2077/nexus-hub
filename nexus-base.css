@@ -202,12 +202,23 @@ input:focus ~ .search-glow { opacity: 1; }
 }
 
 /* ── Ticker Bar ────────────────────────────────── */
-.ticker-wrap { overflow: hidden; border-top: 1px solid #111; border-bottom: 1px solid #111; }
+.ticker-wrap { 
+  overflow: hidden; 
+  border-top: 1px solid #111; 
+  border-bottom: 1px solid #111; 
+}
+
 .ticker-track {
-  display: flex; gap: 4rem; white-space: nowrap;
+  display: flex; 
+  width: max-content; /* S'assure que la piste prend toute la largeur de ses enfants */
+  white-space: nowrap;
   animation: ticker 22s linear infinite;
 }
-@keyframes ticker { from { transform:translateX(0); } to { transform:translateX(-50%); } }
+
+@keyframes ticker { 
+  0% { transform: translateX(0); } 
+  100% { transform: translateX(-50%); } 
+}
 
 /* ── Entry Animations ──────────────────────────── */
 .fade-up { opacity:0; transform:translateY(24px); animation: fadeup .7s ease forwards; }
