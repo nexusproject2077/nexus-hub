@@ -135,6 +135,29 @@
       window.scrollTo({ top: 0, behavior: 'smooth' })
     );
   }
+  
+//âge
+  function calculateAge(birthDate) {
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+    // Si le mois actuel est avant juillet, ou si on est en juillet mais avant le 8
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // Date de naissance : 8 Juillet 2006 (les mois commencent à 0 en JS : 6 = Juillet)
+    const birthDate = new Date(2006, 6, 8); 
+    const ageElement = document.getElementById('user-age');
+    
+    if (ageElement) {
+      ageElement.textContent = calculateAge(birthDate);
+    }
+  });
 
   // ── Keyboard shortcut: '/' → focus search ─────
   document.addEventListener('keydown', e => {
