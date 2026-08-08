@@ -1,10 +1,16 @@
-<div class="ticker-wrap w-full py-2 fade-up d2">
-  <div class="ticker-track mono text-[9px] uppercase tracking-widest text-zinc-700">
-    <span>NEXUS HUB</span><span>◆</span><span>Core Stable</span><span>◆</span>
-    <span>Uptime 99.9%</span><span>◆</span><span>Neural Assistant</span><span>◆</span>
-    <span>Precision V4</span><span>◆</span><span class="current-year"></span><span>◆</span>
-    <span>NEXUS HUB</span><span>◆</span><span>Core Stable</span><span>◆</span>
-    <span>Uptime 99.9%</span><span>◆</span><span>Neural Assistant</span><span>◆</span>
-    <span>Precision V4</span><span>◆</span><span class="current-year"></span><span>◆</span>
+<div class="ticker-wrap w-full py-2 overflow-hidden fade-up d2">
+  <div class="ticker-track mono text-[9px] uppercase tracking-widest text-zinc-700 flex whitespace-nowrap">
+    <!-- Premier bloc de contenu -->
+    <div class="ticker-content flex gap-4 pr-4">
+      <span>NEXUS HUB</span><span>◆</span><span>Core Stable</span><span>◆</span>
+      <span>Uptime 99.9%</span><span>◆</span><span>Neural Assistant</span><span>◆</span>
+      <span>Precision V4</span><span>◆</span><span class="current-year"></span><span>◆</span>
+    </div>
+    <!-- Deuxième bloc identique pour créer la boucle infinie -->
+    <div class="ticker-content flex gap-4 pr-4" aria-hidden="true">
+      <span>NEXUS HUB</span><span>◆</span><span>Core Stable</span><span>◆</span>
+      <span>Uptime 99.9%</span><span>◆</span><span>Neural Assistant</span><span>◆</span>
+      <span>Precision V4</span><span>◆</span><span class="current-year"></span><span>◆</span>
+    </div>
   </div>
 </div>
