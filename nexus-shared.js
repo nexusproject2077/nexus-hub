@@ -179,6 +179,29 @@
   }
 })();
 
+//ticker
+   document.addEventListener("DOMContentLoaded", () => {
+  const container = document.getElementById("ticker-container");
+  
+  if (container) {
+    fetch("ticker.html")
+      .then(response => {
+        if (!response.ok) throw new Error("Erreur de chargement du ticker");
+        return response.text();
+      })
+      .then(html => {
+        container.innerHTML = html;
+
+        // Mise à jour automatique des années dans le ticker injecté
+        const currentYear = new Date().getFullYear();
+        container.querySelectorAll(".current-year").forEach(el => {
+          el.textContent = currentYear;
+        });
+      })
+      .catch(err => console.error("Ticker Load Error:", err));
+  }
+});
+   
   // ── Keyboard shortcut: '/' → focus search ─────
   document.addEventListener('keydown', e => {
     if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
