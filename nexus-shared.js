@@ -135,7 +135,7 @@
       window.scrollTo({ top: 0, behavior: 'smooth' })
     );
   }
-  
+
 //âge
   function calculateAge(birthDate) {
     const today = new Date();
@@ -158,6 +158,26 @@
       ageElement.textContent = calculateAge(birthDate);
     }
   });
+
+  //année
+  (function () {
+  const year = new Date().getFullYear();
+  document.querySelectorAll('.current-year').forEach(el => {
+    el.textContent = year;
+  });
+})();
+
+//blog
+(function () {
+  const startYear = 2020;
+  const currentYear = new Date().getFullYear();
+  const yearsOfCoding = currentYear - startYear;
+  
+  const codingElement = document.getElementById('coding-years');
+  if (codingElement) {
+    codingElement.textContent = yearsOfCoding;
+  }
+})();
 
   // ── Keyboard shortcut: '/' → focus search ─────
   document.addEventListener('keydown', e => {
