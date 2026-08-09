@@ -20,7 +20,7 @@ import json
 import os
 import time
 
-USERNAME = os.environ.get("INSTA_USERNAME", "merickkn")
+USERNAME = os.environ.get("INSTA_USERNAME", "merickn")
 SESSION_ID = os.environ.get("INSTA_SESSION_ID", "")
 PASSWORD = os.environ.get("INSTA_PASSWORD", "")
 

@@ -37,7 +37,7 @@ Si le terminal / Cloud Shell est désactivé, tout se fait depuis l'interface.
    (⚠️ doivent correspondre au bloc `rewrites` de `firebase.json`).
 6. **Authentification** : *Autoriser les appels non authentifiés*.
 7. (Optionnel) **Variables et secrets** :
-   - `INSTA_USERNAME = merickkn`, `FOLLOWERS_TTL = 1800`
+   - `INSTA_USERNAME = merickn`, `FOLLOWERS_TTL = 1800`
    - Pour les abonnés en temps réel : créer un secret `insta-session` (valeur = cookie
      `sessionid` Instagram) puis le référencer sur `INSTA_SESSION_ID`.
 8. **Créer / Déployer**. Cloud Build construit l'image et met le service en ligne
@@ -112,7 +112,7 @@ gcloud run deploy nexus-hub-api \
   --source . \
   --region europe-west1 \
   --allow-unauthenticated \
-  --set-env-vars INSTA_USERNAME=merickkn,FOLLOWERS_TTL=1800 \
+  --set-env-vars INSTA_USERNAME=merickn,FOLLOWERS_TTL=1800 \
   --set-build-env-vars GOOGLE_DOCKERFILE=backend/Dockerfile
 ```
 

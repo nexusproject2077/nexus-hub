@@ -8,7 +8,7 @@ import time
 import re
 
 # Configuration
-USERNAME = os.environ.get('INSTA_USERNAME', 'merickkn')
+USERNAME = os.environ.get('INSTA_USERNAME', 'merickn')
 SESSION_ID = os.environ.get('INSTA_SESSION_ID', '')
 OUTPUT_FILE = 'fils/followers_data.json'
 

@@ -25,7 +25,7 @@ GitHub Pages est **totalement gratuit** et illimitÃ© pour les projets publics! ð
 
    **Secret 1:**
    - Name: `INSTA_USERNAME`
-   - Value: `merickkn`
+   - Value: `merickn`
 
    **Secret 2:**
    - Name: `INSTA_SESSION_ID`

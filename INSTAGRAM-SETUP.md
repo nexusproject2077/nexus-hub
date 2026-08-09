@@ -13,7 +13,7 @@ Maintenant, configurons le compteur d'abonnés Instagram pour qu'il se mette à 
 
 1. **Ouvrez Instagram dans votre navigateur** (Chrome, Firefox, Edge...)
    - Allez sur: https://www.instagram.com
-   - **Connectez-vous** à votre compte (@merickkn)
+   - **Connectez-vous** à votre compte (@merickn)
 
 2. **Ouvrez les outils de développement**
    - **Windows/Linux:** Appuyez sur `F12`
@@ -64,7 +64,7 @@ Copiez la VALEUR (longue chaîne de caractères)
 1. Cliquez sur **"New repository secret"** (bouton vert)
 2. Remplissez:
    - **Name:** `INSTA_USERNAME`
-   - **Value:** `merickkn`
+   - **Value:** `merickn`
 3. Cliquez sur **"Add secret"**
 
 ### 2.3 Ajouter le Deuxième Secret (Session ID)
@@ -125,7 +125,7 @@ Netlify détecte automatiquement les changements sur GitHub:
 ### 4.2 Voir le Résultat
 
 1. Allez sur votre site: https://nexus-hubs.netlify.app/
-2. Regardez la section avec votre photo Instagram (@merickkn)
+2. Regardez la section avec votre photo Instagram (@merickn)
 3. **Le nombre d'abonnés devrait s'afficher!** 🎉
 
 ---
