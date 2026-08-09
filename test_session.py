@@ -6,7 +6,7 @@ import os
 import json
 
 SESSION_ID = os.environ.get('INSTA_SESSION_ID', '')
-USERNAME = os.environ.get('INSTA_USERNAME', 'merickkn')
+USERNAME = os.environ.get('INSTA_USERNAME', 'merickn')
 
 def test_session_id():
     """Teste si le Session ID permet d'accéder à Instagram"""

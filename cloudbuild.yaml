@@ -51,7 +51,7 @@ steps:
       - --region=${_DEPLOY_REGION}
       - --platform=managed
       - --allow-unauthenticated
-      - --set-env-vars=INSTA_USERNAME=merickkn,FOLLOWERS_TTL=1800
+      - --set-env-vars=INSTA_USERNAME=merickn,FOLLOWERS_TTL=1800
 
 images:
   - ${_AR_HOSTNAME}/${_AR_PROJECT_ID}/${_AR_REPOSITORY}/${_SERVICE_NAME}:$COMMIT_SHA

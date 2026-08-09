@@ -11,7 +11,7 @@ Endpoints :
   GET /api/followers -> nombre d'abonnés Instagram (avec cache + fallback)
 
 Variables d'environnement :
-  INSTA_USERNAME     -> nom d'utilisateur Instagram (def: merickkn)
+  INSTA_USERNAME     -> nom d'utilisateur Instagram (def: merickn)
   INSTA_SESSION_ID   -> cookie de session Instagram (secret, optionnel)
   FOLLOWERS_TTL      -> durée de cache en secondes (def: 1800 = 30 min)
   PORT               -> port d'écoute (fourni automatiquement par Cloud Run)
@@ -29,7 +29,7 @@ app = Flask(__name__)
 # CORS ouvert : le frontend peut aussi appeler l'API directement en dev.
 CORS(app)
 
-USERNAME = os.environ.get("INSTA_USERNAME", "merickkn")
+USERNAME = os.environ.get("INSTA_USERNAME", "merickn")
 SESSION_ID = os.environ.get("INSTA_SESSION_ID", "")
 CACHE_TTL = int(os.environ.get("FOLLOWERS_TTL", "1800"))
 

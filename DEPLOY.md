@@ -31,7 +31,7 @@ Le compteur d'abonnés Instagram fonctionne via GitHub Actions qui met à jour l
 
    **Secret 1:**
    - Name: `INSTA_USERNAME`
-   - Value: `merickkn` (votre nom d'utilisateur Instagram)
+   - Value: `merickn` (votre nom d'utilisateur Instagram)
 
    **Secret 2:**
    - Name: `INSTA_SESSION_ID`
@@ -99,7 +99,7 @@ Render détecte les changements sur votre branche GitHub et redéploie automatiq
 ## Étape 5: Vérifier que le Compteur Instagram Fonctionne
 
 1. Allez sur votre site Render
-2. Regardez la section avec votre photo Instagram (@merickkn)
+2. Regardez la section avec votre photo Instagram (@merickn)
 3. Le nombre d'abonnés devrait s'afficher (formaté en K si > 1000)
 4. Si vous voyez "...", "0" ou "Erreur", attendez quelques minutes ou vérifiez:
    - Que les secrets GitHub sont bien configurés

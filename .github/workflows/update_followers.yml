@@ -1,49 +1,48 @@
 name: Update Instagram Followers Count
 
 on:
-  # Exécute l'action toutes les 6 heures (ou selon votre choix)
+  # Toutes les 6 heures
   schedule:
     - cron: '0 */6 * * *'
-  # Permet de lancer l'action manuellement
-  workflow_dispatch: 
+  # Déclenchement manuel
+  workflow_dispatch:
 
 jobs:
   update-data:
     runs-on: ubuntu-latest
 
-    # 1. CORRECTION : AJOUT DES PERMISSIONS D'ÉCRITURE pour le commit
+    # Droits d'écriture pour committer le JSON mis à jour
     permissions:
-      contents: write 
-      
+      contents: write
+
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up Python
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v5
       with:
         python-version: '3.x'
 
-    - name: Install dependencies (Requests)
+    - name: Install dependencies (instagrapi)
       run: |
         python -m pip install --upgrade pip
-        pip install requests
+        pip install instagrapi
 
-    - name: Execute Python script
-      # 2. CORRECTION : PLACEMENT ET UTILISATION DU SESSION ID
+    - name: Fetch followers via instagrapi
       env:
         INSTA_USERNAME: ${{ secrets.INSTA_USERNAME }}
+        # Recommandé : cookie de session (aucun mot de passe en clair)
         INSTA_SESSION_ID: ${{ secrets.INSTA_SESSION_ID }}
-        # Le script Python (fetch_followers.py) doit être configuré pour utiliser INSTA_SESSION_ID
-        # au lieu de INSTA_PASSWORD pour l'authentification.
-      run: python fetch_followers.py
+        # Optionnel, utilisé seulement si INSTA_SESSION_ID est absent
+        INSTA_PASSWORD: ${{ secrets.INSTA_PASSWORD }}
+      run: python fetch_followers_instagrapi.py
 
     - name: Copy data to root for web access
       run: cp fils/followers_data.json followers_data.json
 
-    - name: Commit and Push new data
-      # Correction du paramètre 'files' par 'file_pattern'
-      uses: stefanzweifel/git-auto-commit-action@v4
+    - name: Commit and push new data
+      uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: 'ACTION: Auto-update Instagram followers count'
         file_pattern: 'fils/followers_data.json followers_data.json'
