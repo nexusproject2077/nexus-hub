@@ -28,7 +28,11 @@ Si le terminal / Cloud Shell est désactivé, tout se fait depuis l'interface.
 2. **Configurer avec Cloud Build** → fournisseur **GitHub** → autoriser puis choisir le dépôt `nexusproject2077/nexus-hub`.
 3. **Branche** : `^main$` (déploiement continu à chaque push sur `main`).
 4. **Type de build** : `Dockerfile`.
-   - **Emplacement du Dockerfile / répertoire source** : `/backend` (le Dockerfile est dans `backend/`).
+   - **Emplacement du Dockerfile** : `backend/Dockerfile`
+     ⚠️ bien indiquer le **fichier** `backend/Dockerfile`, **pas** le dossier `/backend`
+     (sinon : *« read .../backend: is a directory »*).
+   - Le contexte de build est la **racine du dépôt** ; le `Dockerfile` en tient
+     compte (il fait `COPY backend/...`), aucune autre configuration n'est requise.
 5. **Nom du service** : `nexus-hub-api` — **Région** : `europe-west1`
    (⚠️ doivent correspondre au bloc `rewrites` de `firebase.json`).
 6. **Authentification** : *Autoriser les appels non authentifiés*.
@@ -45,11 +49,14 @@ Le workflow `.github/workflows/deploy-firebase-hosting.yml` déploie automatique
 à chaque push sur `main`. Il faut lui donner **un secret** (une seule fois) :
 
 1. **Console Firebase** → ⚙️ *Paramètres du projet* → onglet **Comptes de service**
-   → **Générer une nouvelle clé privée** → un fichier JSON est téléchargé.
+   → bouton **Générer une nouvelle clé privée** → un **fichier JSON** est téléchargé.
+   ⚠️ Il faut bien **ce fichier JSON téléchargé**, PAS l'extrait de code affiché
+   sur la page (celui qui commence par `var admin = require("firebase-admin")`).
+   Le bon contenu commence par `{ "type": "service_account", "project_id": ... }`.
 2. **GitHub** → dépôt `nexus-hub` → **Settings → Secrets and variables → Actions**
    → **New repository secret** :
    - **Name** : `FIREBASE_SERVICE_ACCOUNT`
-   - **Secret** : coller **tout le contenu** du fichier JSON.
+   - **Secret** : coller **tout le contenu du fichier JSON** (les accolades incluses).
 3. Le déploiement se lance au prochain push sur `main`, ou manuellement via
    l'onglet **Actions → Deploy Frontend to Firebase Hosting → Run workflow**.
 
@@ -96,17 +103,22 @@ gcloud services enable run.googleapis.com \
 
 ## 1. Déployer le backend sur Cloud Run
 
-Depuis le dossier `backend/` :
+Le `Dockerfile` attend le **contexte racine du dépôt**, donc on lance la
+commande **depuis la racine** en pointant explicitement le Dockerfile :
 
 ```bash
-cd backend
-
+# À la racine du dépôt (pas dans backend/)
 gcloud run deploy nexus-hub-api \
   --source . \
   --region europe-west1 \
   --allow-unauthenticated \
-  --set-env-vars INSTA_USERNAME=merickkn,FOLLOWERS_TTL=1800
+  --set-env-vars INSTA_USERNAME=merickkn,FOLLOWERS_TTL=1800 \
+  --set-build-env-vars GOOGLE_DOCKERFILE=backend/Dockerfile
 ```
+
+> Si votre version de `gcloud` ne connaît pas `--set-build-env-vars`, utilisez
+> plutôt la console (section « Déploiement sans terminal ») ou un build
+> explicite : `gcloud builds submit --tag REGION-docker.pkg.dev/PROJET/REPO/nexus-hub-api -f backend/Dockerfile .`
 
 > ⚠️ Le nom du service (`nexus-hub-api`) et la région (`europe-west1`)
 > doivent correspondre au bloc `rewrites` de `firebase.json`.
