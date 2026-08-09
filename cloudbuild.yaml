@@ -1,0 +1,52 @@
+# Cloud Build — build ET déploiement du backend sur Cloud Run
+#
+# À utiliser avec un déclencheur Cloud Build de type
+# « Fichier de configuration Cloud Build » pointant sur /cloudbuild.yaml.
+# Contrairement à un déclencheur « Dockerfile » (qui ne fait que construire
+# l'image), ce pipeline construit PUIS déploie le service Cloud Run
+# `nexus-hub-api`, ce qui crée réellement le service attendu par la
+# réécriture /api/** de firebase.json.
+
+substitutions:
+  _SERVICE: nexus-hub-api
+  _REGION: europe-west1
+
+steps:
+  # 1) Build de l'image (contexte = racine du dépôt, Dockerfile dans backend/)
+  - id: build
+    name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -f
+      - backend/Dockerfile
+      - -t
+      - gcr.io/$PROJECT_ID/${_SERVICE}:$COMMIT_SHA
+      - .
+
+  # 2) Push de l'image
+  - id: push
+    name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - gcr.io/$PROJECT_ID/${_SERVICE}:$COMMIT_SHA
+
+  # 3) Déploiement sur Cloud Run (région alignée avec firebase.json)
+  - id: deploy
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - ${_SERVICE}
+      - --image=gcr.io/$PROJECT_ID/${_SERVICE}:$COMMIT_SHA
+      - --region=${_REGION}
+      - --platform=managed
+      - --allow-unauthenticated
+      - --set-env-vars=INSTA_USERNAME=merickkn,FOLLOWERS_TTL=1800
+
+images:
+  - gcr.io/$PROJECT_ID/${_SERVICE}:$COMMIT_SHA
+
+options:
+  # Requis quand le build tourne avec le compte de service Compute par défaut
+  logging: CLOUD_LOGGING_ONLY

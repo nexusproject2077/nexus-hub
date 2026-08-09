@@ -232,6 +232,28 @@ Deux causes possibles, à vérifier dans l'ordre :
 
 Après correction : **Actions → Deploy Frontend to Firebase Hosting → Run workflow**.
 
+### Déploiement Firebase : `Permission 'run.services.get' denied ... (or resource may not exist)`
+La réécriture `/api/**` de `firebase.json` pointe vers le service Cloud Run
+`nexus-hub-api`, que Firebase valide à la finalisation. Deux causes :
+
+1. **Le service Cloud Run n'existe pas encore.** Un déclencheur Cloud Build de
+   type *Dockerfile* ne fait que **construire** l'image, il ne déploie rien.
+   Pour créer le service, utilisez le pipeline **build + deploy** fourni :
+   - Cloud Build → **Déclencheurs** → votre déclencheur → **Type de
+     configuration** = *Fichier de configuration Cloud Build* →
+     emplacement `cloudbuild.yaml`.
+   - (ou, plus simple, Cloud Run → *Déployer le conteneur → Déployer en continu
+     depuis un dépôt*, qui construit **et** déploie automatiquement.)
+   - Le compte de service du build (souvent `PROJET_NUMBER-compute@developer.gserviceaccount.com`)
+     doit avoir : **Administrateur Cloud Run** (`roles/run.admin`) et
+     **Utilisateur du compte de service** (`roles/iam.serviceAccountUser`).
+
+2. **Le compte de service Firebase ne peut pas lire le service.** Ajoutez-lui
+   le rôle **Lecteur Cloud Run** (`roles/run.viewer`) sur le projet `nexus-hubs`.
+
+> ⚠️ Ordre : le service Cloud Run doit être **en ligne** avant de relancer le
+> workflow Firebase, sinon la finalisation échoue à nouveau.
+
 ## Récapitulatif des fichiers
 
 | Fichier                        | Rôle                                                      |
