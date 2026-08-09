@@ -167,6 +167,34 @@
   });
 })();
 
+  // ── Compteur d'abonnés Instagram ───────────────
+  // Lit le fichier JSON tenu à jour par le workflow GitHub (instagrapi),
+  // avec repli sur le backend Cloud Run /api/followers si besoin.
+  (function () {
+    const el = document.getElementById('follower-count');
+    if (!el) return;
+
+    const fmt = n => Number(n).toLocaleString('fr-FR');
+
+    const fromStatic = () =>
+      fetch('./followers_data.json?t=' + Date.now(), { cache: 'no-store' })
+        .then(r => (r.ok ? r.json() : Promise.reject()));
+
+    const fromApi = () =>
+      fetch('/api/followers', { cache: 'no-store' })
+        .then(r => (r.ok ? r.json() : Promise.reject()));
+
+    // Le JSON statique est la source de vérité (mis à jour toutes les 6 h).
+    fromStatic()
+      .catch(fromApi)
+      .then(d => {
+        if (d && typeof d.followers === 'number' && d.followers > 0) {
+          el.textContent = fmt(d.followers);
+        }
+      })
+      .catch(() => { /* on garde la valeur affichée par défaut */ });
+  })();
+
 //blog
 (function () {
   const startYear = 2020;
