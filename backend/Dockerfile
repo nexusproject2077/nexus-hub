@@ -1,4 +1,9 @@
 # Nexus-Hub backend — image Cloud Run
+#
+# ⚠️ CONTEXTE DE BUILD = RACINE DU DÉPÔT
+# La console Cloud Run ("Connecter un dépôt") envoie tout le dépôt comme
+# contexte de build. On préfixe donc les COPY par `backend/`.
+# Dans la config, indiquez le Dockerfile : `backend/Dockerfile`.
 FROM python:3.12-slim
 
 ENV PYTHONUNBUFFERED=1 \
@@ -8,11 +13,11 @@ ENV PYTHONUNBUFFERED=1 \
 WORKDIR /app
 
 # Dépendances d'abord (meilleure mise en cache des couches)
-COPY requirements.txt .
+COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Code applicatif + dernière valeur d'abonnés connue (fallback)
-COPY . .
+COPY backend/ .
 
 EXPOSE 8080
 
