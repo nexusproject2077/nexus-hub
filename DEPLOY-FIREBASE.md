@@ -18,6 +18,49 @@ Navigateur ──► https://nexus-hubs.web.app/            (Firebase Hosting, s
 
 ---
 
+## 🚀 Déploiement SANS terminal (Cloud Shell désactivé)
+
+Si le terminal / Cloud Shell est désactivé, tout se fait depuis l'interface.
+
+### A. Backend → Cloud Run (console Google Cloud)
+
+1. Console Cloud Run → **« Connecter un dépôt »** (ou **Déployer le conteneur → Déployer en continu depuis un dépôt**).
+2. **Configurer avec Cloud Build** → fournisseur **GitHub** → autoriser puis choisir le dépôt `nexusproject2077/nexus-hub`.
+3. **Branche** : `^main$` (déploiement continu à chaque push sur `main`).
+4. **Type de build** : `Dockerfile`.
+   - **Emplacement du Dockerfile / répertoire source** : `/backend` (le Dockerfile est dans `backend/`).
+5. **Nom du service** : `nexus-hub-api` — **Région** : `europe-west1`
+   (⚠️ doivent correspondre au bloc `rewrites` de `firebase.json`).
+6. **Authentification** : *Autoriser les appels non authentifiés*.
+7. (Optionnel) **Variables et secrets** :
+   - `INSTA_USERNAME = merickkn`, `FOLLOWERS_TTL = 1800`
+   - Pour les abonnés en temps réel : créer un secret `insta-session` (valeur = cookie
+     `sessionid` Instagram) puis le référencer sur `INSTA_SESSION_ID`.
+8. **Créer / Déployer**. Cloud Build construit l'image et met le service en ligne
+   (redéploiement automatique à chaque push ensuite).
+
+### B. Frontend → Firebase Hosting (via GitHub Actions)
+
+Le workflow `.github/workflows/deploy-firebase-hosting.yml` déploie automatiquement
+à chaque push sur `main`. Il faut lui donner **un secret** (une seule fois) :
+
+1. **Console Firebase** → ⚙️ *Paramètres du projet* → onglet **Comptes de service**
+   → **Générer une nouvelle clé privée** → un fichier JSON est téléchargé.
+2. **GitHub** → dépôt `nexus-hub` → **Settings → Secrets and variables → Actions**
+   → **New repository secret** :
+   - **Name** : `FIREBASE_SERVICE_ACCOUNT`
+   - **Secret** : coller **tout le contenu** du fichier JSON.
+3. Le déploiement se lance au prochain push sur `main`, ou manuellement via
+   l'onglet **Actions → Deploy Frontend to Firebase Hosting → Run workflow**.
+
+> Le projet Firebase doit avoir l'ID `nexus-hubs` (→ `nexus-hubs.web.app`).
+> Sinon, ajustez `projectId` dans le workflow, ainsi que `.firebaserc`.
+
+Les sections ci-dessous décrivent l'équivalent **en ligne de commande** (si un jour
+vous avez accès à un terminal).
+
+---
+
 ## 0. Prérequis (une seule fois)
 
 ```bash
