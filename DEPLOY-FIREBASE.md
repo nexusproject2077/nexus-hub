@@ -199,6 +199,39 @@ utilise le JSON statique — le site reste fonctionnel.
 
 ---
 
+## 🛠️ Dépannage
+
+### `Failed to authenticate, have you run firebase login?` + `... is not valid JSON`
+Le secret `FIREBASE_SERVICE_ACCOUNT` ne contient pas la clé JSON mais l'extrait
+de code de la page « Comptes de service ». Recollez le **fichier JSON**
+téléchargé (commence par `{ "type": "service_account", ... }`).
+
+### `Failed to get Firebase project nexus-hubs` + HTTP 403 `PERMISSION_DENIED`
+Le compte de service s'authentifie mais n'a pas les droits sur le projet.
+Deux causes possibles, à vérifier dans l'ordre :
+
+1. **Firebase n'est pas activé sur le projet.**
+   - <https://console.firebase.google.com> → **Ajouter un projet** →
+     *Ajouter Firebase à un projet Google Cloud existant* → sélectionner `nexus-hubs`.
+   - Puis **Build → Hosting → Commencer** pour créer le site `nexus-hubs.web.app`.
+
+2. **Le compte de service n'a pas les bons rôles IAM.**
+   Console Google Cloud → **IAM et administration → IAM** (projet `nexus-hubs`)
+   → repérer le compte de service de la clé (ex. `firebase-adminsdk-xxxxx@nexus-hubs.iam.gserviceaccount.com`)
+   → **Modifier** → ajouter :
+   - **Administrateur Firebase Hosting** (`roles/firebasehosting.admin`)
+   - **Consommateur Service Usage** (`roles/serviceusage.serviceUsageConsumer`)
+   - **Lecteur Firebase** (`roles/firebase.viewer`) — pour `firebase.projects.get`
+
+   > Alternative rapide (moins fine) : un seul rôle **Administrateur Firebase**
+   > (`roles/firebase.admin`). Comptez 1–2 min de propagation avant de relancer.
+
+3. **Vérifier le bon projet** : le champ `project_id` **dans le fichier JSON**
+   du secret doit être exactement `nexus-hubs`. Sinon, la clé vient d'un autre
+   projet → régénérez-la depuis les paramètres du projet `nexus-hubs`.
+
+Après correction : **Actions → Deploy Frontend to Firebase Hosting → Run workflow**.
+
 ## Récapitulatif des fichiers
 
 | Fichier                        | Rôle                                                      |
