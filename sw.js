@@ -1,4 +1,4 @@
-const CACHE = 'nexus-v6';
+const CACHE = 'nexus-v7';
 const ASSETS = [
   './',
   './index.html',
@@ -29,30 +29,39 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  // Laisser passer les requêtes externes (CDN, APIs)
+  if (e.request.method !== 'GET') return;
+  // Laisser passer les requêtes externes (CDN, APIs tierces)
   if (!e.request.url.startsWith(self.location.origin)) return;
 
-  const isHTML =
-    e.request.mode === 'navigate' ||
-    e.request.destination === 'document' ||
-    e.request.url.endsWith('.html') ||
-    e.request.url.endsWith('/');
+  // Les images changent rarement (et le favicon est lourd) -> CACHE-FIRST.
+  const isImage =
+    e.request.destination === 'image' ||
+    /\.(png|jpe?g|svg|webp|ico|gif)(\?.*)?$/i.test(e.request.url);
 
-  if (isHTML) {
-    // NETWORK-FIRST : toujours la dernière version, cache en secours (hors ligne)
+  if (isImage) {
     e.respondWith(
-      fetch(e.request)
-        .then(res => {
+      caches.match(e.request).then(cached =>
+        cached ||
+        fetch(e.request).then(res => {
           const copy = res.clone();
           caches.open(CACHE).then(c => c.put(e.request, copy));
           return res;
         })
-        .catch(() => caches.match(e.request))
+      )
     );
-  } else {
-    // CACHE-FIRST : pour CSS, JS, images (rapide)
-    e.respondWith(
-      caches.match(e.request).then(cached => cached || fetch(e.request))
-    );
+    return;
   }
+
+  // Tout le reste (HTML, JS, CSS, JSON, /api) -> NETWORK-FIRST :
+  // on affiche TOUJOURS la dernière version quand on est en ligne ;
+  // le cache ne sert que de secours hors ligne. Fini le Ctrl+F5.
+  e.respondWith(
+    fetch(e.request)
+      .then(res => {
+        const copy = res.clone();
+        caches.open(CACHE).then(c => c.put(e.request, copy));
+        return res;
+      })
+      .catch(() => caches.match(e.request))
+  );
 });
