@@ -6,10 +6,19 @@
 # l'image), ce pipeline construit PUIS déploie le service Cloud Run
 # `nexus-hub-api`, ce qui crée réellement le service attendu par la
 # réécriture /api/** de firebase.json.
+#
+# Les noms de variables ci-dessous reprennent ceux injectés par l'intégration
+# Cloud Run (_SERVICE_NAME, _DEPLOY_REGION, _AR_HOSTNAME, _AR_PROJECT_ID,
+# _AR_REPOSITORY) : les valeurs déjà présentes sur le déclencheur sont donc
+# réutilisées telles quelles. `ALLOW_LOOSE` tolère les variables fournies par
+# le déclencheur mais non utilisées ici (_TRIGGER_ID, REPO_NAME).
 
 substitutions:
-  _SERVICE: nexus-hub-api
-  _REGION: europe-west1
+  _SERVICE_NAME: nexus-hub-api
+  _DEPLOY_REGION: europe-west1
+  _AR_HOSTNAME: europe-west1-docker.pkg.dev
+  _AR_PROJECT_ID: nexus-hubs
+  _AR_REPOSITORY: cloud-run-source-deploy
 
 steps:
   # 1) Build de l'image (contexte = racine du dépôt, Dockerfile dans backend/)
@@ -20,15 +29,15 @@ steps:
       - -f
       - backend/Dockerfile
       - -t
-      - gcr.io/$PROJECT_ID/${_SERVICE}:$COMMIT_SHA
+      - ${_AR_HOSTNAME}/${_AR_PROJECT_ID}/${_AR_REPOSITORY}/${_SERVICE_NAME}:$COMMIT_SHA
       - .
 
-  # 2) Push de l'image
+  # 2) Push de l'image vers Artifact Registry
   - id: push
     name: gcr.io/cloud-builders/docker
     args:
       - push
-      - gcr.io/$PROJECT_ID/${_SERVICE}:$COMMIT_SHA
+      - ${_AR_HOSTNAME}/${_AR_PROJECT_ID}/${_AR_REPOSITORY}/${_SERVICE_NAME}:$COMMIT_SHA
 
   # 3) Déploiement sur Cloud Run (région alignée avec firebase.json)
   - id: deploy
@@ -37,16 +46,18 @@ steps:
     args:
       - run
       - deploy
-      - ${_SERVICE}
-      - --image=gcr.io/$PROJECT_ID/${_SERVICE}:$COMMIT_SHA
-      - --region=${_REGION}
+      - ${_SERVICE_NAME}
+      - --image=${_AR_HOSTNAME}/${_AR_PROJECT_ID}/${_AR_REPOSITORY}/${_SERVICE_NAME}:$COMMIT_SHA
+      - --region=${_DEPLOY_REGION}
       - --platform=managed
       - --allow-unauthenticated
       - --set-env-vars=INSTA_USERNAME=merickkn,FOLLOWERS_TTL=1800
 
 images:
-  - gcr.io/$PROJECT_ID/${_SERVICE}:$COMMIT_SHA
+  - ${_AR_HOSTNAME}/${_AR_PROJECT_ID}/${_AR_REPOSITORY}/${_SERVICE_NAME}:$COMMIT_SHA
 
 options:
+  # Tolère les substitutions fournies par le déclencheur mais non référencées ici
+  substitution_option: ALLOW_LOOSE
   # Requis quand le build tourne avec le compte de service Compute par défaut
   logging: CLOUD_LOGGING_ONLY
