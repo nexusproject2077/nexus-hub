@@ -213,54 +213,60 @@ input:focus ~ .search-glow { opacity: 1; }
 }
 
 /* ── Ticker Bar ────────────────────────────────── */
-.ticker-wrap { overflow: hidden; border-top: 1px solid #111; border-bottom: 1px solid #111; max-width: auto; overflow: hidden !important;  }
-./* ── /* ── Responsive Ticker Bar (Mobile) ────────────── */
-@media (max-width: 640px) {
-  .ticker-wrap {
-    padding-top: 0.375rem;
-    padding-bottom: 0.375rem;
-  }
-
-  .ticker-track {
-    /* Augmente le temps sur mobile pour éviter la sensation d'accélération */
-    animation-duration: 240s; 
-  }
-
-  .ticker-content {
-    /* Resserre l'écart entre le texte et les séparateurs */
-    gap: 0.75rem !important; 
-    padding-right: 0.75rem !important;
-    
-    /* Réduit la taille du texte sur mobile pour plus de lisibilité */
-    font-size: 7.5px !important; 
-  }
+/* S'adapte automatiquement à tous les écrans (mobile → 4K)          */
+.ticker-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  border-top: 1px solid #111;
+  border-bottom: 1px solid #111;
+  /* Padding vertical fluide selon la largeur du viewport */
+  padding-top: clamp(0.35rem, 0.9vw, 0.7rem);
+  padding-bottom: clamp(0.35rem, 0.9vw, 0.7rem);
 }
-Responsive Ticker Bar (Mobile) ────────────── */
-@media (max-width: 640px) {
-  .ticker-wrap {
-    padding-top: 0.375rem;
-    padding-bottom: 0.375rem;
-  }
 
-  .ticker-track {
-    /* Augmente le temps sur mobile pour éviter la sensation d'accélération */
-    animation-duration: 240s; 
-  }
-
-  .ticker-content {
-    /* Resserre l'écart entre le texte et les séparateurs */
-    gap: 0.75rem !important; 
-    padding-right: 0.75rem !important;
-    
-    /* Réduit la taille du texte sur mobile pour plus de lisibilité */
-    font-size: 7.5px !important; 
-  }
-}
-ticker-track {
-  display: flex; gap: 4rem; white-space: nowrap;
+/* La piste défile en boucle : deux copies identiques du contenu.    */
+/* width:max-content garantit un translateX(-50%) parfaitement fluide */
+.ticker-track {
+  display: flex;
+  width: max-content;
+  white-space: nowrap;
+  will-change: transform;
   animation: ticker 80s linear infinite;
 }
-@keyframes ticker { from { transform:translateX(0); } to { transform:translateX(-50%); } }
+
+/* Chaque bloc de contenu — taille de police fluide via clamp() */
+.ticker-content {
+  display: flex;
+  flex: none;
+  align-items: center;
+  /* !important pour l'emporter sur les utilitaires Tailwind (gap-6 / pr-6) */
+  font-size: clamp(7.5px, 1.1vw, 11px) !important;
+  gap: clamp(0.75rem, 2vw, 1.5rem) !important;
+  padding-right: clamp(0.75rem, 2vw, 1.5rem) !important;
+}
+
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ── Responsive Ticker ─────────────────────────────────────────── */
+/* La piste étant plus étroite sur petit écran (police réduite),     */
+/* on raccourcit la durée pour garder une vitesse de défilement      */
+/* perçue constante d'un appareil à l'autre.                         */
+@media (max-width: 1024px) {
+  .ticker-track { animation-duration: 60s; }
+}
+
+@media (max-width: 640px) {
+  .ticker-track { animation-duration: 45s; }
+}
+
+/* Respecte les préférences d'accessibilité : stoppe l'animation */
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track { animation: none; }
+}
 
 /* ── Entry Animations ──────────────────────────── */
 .fade-up { opacity:0; transform:translateY(24px); animation: fadeup .7s ease forwards; }

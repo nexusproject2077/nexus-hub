@@ -29,24 +29,37 @@ function formatFollowers(num) {
     return num.toLocaleString(); 
 }
 
-// Fonction pour charger les données des abonnés depuis le fichier JSON statique
-async function loadFollowers() {
+// Charge les abonnés depuis le backend Cloud Run (/api/followers).
+// Si le backend est indisponible, on retombe sur le JSON statique embarqué,
+// de sorte que le site reste fonctionnel même en hébergement purement statique.
+async function fetchFollowersData() {
+    // 1) Backend (Firebase Hosting réécrit /api/** vers Cloud Run)
     try {
-        // Utilisation de ./ pour le chemin relatif
-        const response = await fetch('./followers_data.json'); 
-        if (!response.ok) {
-            throw new Error('Échec du chargement des données des abonnés.');
+        const apiResponse = await fetch('/api/followers', { cache: 'no-store' });
+        if (apiResponse.ok) {
+            return await apiResponse.json();
         }
-        const data = await response.json();
-        
-        const followerCount = data.followers;
-        const formattedCount = formatFollowers(followerCount);
-        
-        document.getElementById('follower-count').textContent = formattedCount;
-        
+    } catch (apiError) {
+        console.warn('Backend indisponible, repli sur le JSON statique :', apiError);
+    }
+
+    // 2) Repli statique
+    const response = await fetch('./followers_data.json');
+    if (!response.ok) {
+        throw new Error('Échec du chargement des données des abonnés.');
+    }
+    return await response.json();
+}
+
+async function loadFollowers() {
+    const el = document.getElementById('follower-count');
+    if (!el) return;
+    try {
+        const data = await fetchFollowersData();
+        el.textContent = formatFollowers(data.followers);
     } catch (error) {
         console.error("Échec de la récupération des abonnés :", error);
-        document.getElementById('follower-count').textContent = 'Erreur';
+        el.textContent = 'Erreur';
     }
 }
 
