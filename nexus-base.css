@@ -213,8 +213,50 @@ input:focus ~ .search-glow { opacity: 1; }
 }
 
 /* ── Ticker Bar ────────────────────────────────── */
-.ticker-wrap { overflow: hidden; border-top: 1px solid #111; border-bottom: 1px solid #111; max-width: auto;  }
-.ticker-track {
+.ticker-wrap { overflow: hidden; border-top: 1px solid #111; border-bottom: 1px solid #111; max-width: auto; overflow: hidden !important;  }
+./* ── /* ── Responsive Ticker Bar (Mobile) ────────────── */
+@media (max-width: 640px) {
+  .ticker-wrap {
+    padding-top: 0.375rem;
+    padding-bottom: 0.375rem;
+  }
+
+  .ticker-track {
+    /* Augmente le temps sur mobile pour éviter la sensation d'accélération */
+    animation-duration: 240s; 
+  }
+
+  .ticker-content {
+    /* Resserre l'écart entre le texte et les séparateurs */
+    gap: 0.75rem !important; 
+    padding-right: 0.75rem !important;
+    
+    /* Réduit la taille du texte sur mobile pour plus de lisibilité */
+    font-size: 7.5px !important; 
+  }
+}
+Responsive Ticker Bar (Mobile) ────────────── */
+@media (max-width: 640px) {
+  .ticker-wrap {
+    padding-top: 0.375rem;
+    padding-bottom: 0.375rem;
+  }
+
+  .ticker-track {
+    /* Augmente le temps sur mobile pour éviter la sensation d'accélération */
+    animation-duration: 240s; 
+  }
+
+  .ticker-content {
+    /* Resserre l'écart entre le texte et les séparateurs */
+    gap: 0.75rem !important; 
+    padding-right: 0.75rem !important;
+    
+    /* Réduit la taille du texte sur mobile pour plus de lisibilité */
+    font-size: 7.5px !important; 
+  }
+}
+ticker-track {
   display: flex; gap: 4rem; white-space: nowrap;
   animation: ticker 80s linear infinite;
 }
