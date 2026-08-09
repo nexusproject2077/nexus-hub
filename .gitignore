@@ -1,0 +1,9 @@
+# Cache de session instagrapi (contient des jetons sensibles — ne jamais committer)
+insta_settings.json
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
