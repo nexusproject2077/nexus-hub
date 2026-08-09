@@ -201,6 +201,26 @@
       .catch(err => console.error("Ticker Load Error:", err));
   }
 });
+
+   //footer
+   document.addEventListener("DOMContentLoaded", () => {
+  // Injection automatique du Footer
+  const footerContainer = document.getElementById("footer-container");
+  if (footerContainer) {
+    fetch("footer.html")
+      .then((response) => response.text())
+      .then((data) => {
+        footerContainer.innerHTML = data;
+        
+        // Met à jour l'année automatiquement après insertion
+        const yearSpans = footerContainer.querySelectorAll(".current-year");
+        yearSpans.forEach((el) => {
+          el.textContent = new Date().getFullYear();
+        });
+      })
+      .catch((err) => console.error("Erreur de chargement du footer:", err));
+  }
+});
    
   // ── Keyboard shortcut: '/' → focus search ─────
   document.addEventListener('keydown', e => {
