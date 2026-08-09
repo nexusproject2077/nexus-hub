@@ -216,7 +216,7 @@ input:focus ~ .search-glow { opacity: 1; }
 .ticker-wrap { overflow: hidden; border-top: 1px solid #111; border-bottom: 1px solid #111; }
 .ticker-track {
   display: flex; gap: 4rem; white-space: nowrap;
-  animation: ticker 22s linear infinite;
+  animation: ticker 80s linear infinite;
 }
 @keyframes ticker { from { transform:translateX(0); } to { transform:translateX(-50%); } }
 
