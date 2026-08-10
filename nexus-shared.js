@@ -208,27 +208,70 @@
 })();
 
 //ticker
-   document.addEventListener("DOMContentLoaded", () => {
-  const container = document.getElementById("ticker-container");
-  
-  if (container) {
-    fetch("ticker.html")
-      .then(response => {
-        if (!response.ok) throw new Error("Erreur de chargement du ticker");
-        return response.text();
-      })
-      .then(html => {
-        container.innerHTML = html;
+  // Construit un marquee fluide : duplique le motif de texte juste assez pour
+  // remplir la largeur visible (mobile → 4K), puis une 2e copie identique pour
+  // une boucle sans trou. Fini la piste géante qui part « à l'autre bout du monde ».
+  function buildTicker(track) {
+    const wrap = track.closest('.ticker-wrap');
+    if (!wrap) return;
 
-        // Mise à jour automatique des années dans le ticker injecté
-        const currentYear = new Date().getFullYear();
-        container.querySelectorAll(".current-year").forEach(el => {
-          el.textContent = currentYear;
-        });
-      })
-      .catch(err => console.error("Ticker Load Error:", err));
+    // Capture le motif d'origine une seule fois (avant duplication).
+    if (!track.dataset.unit) {
+      const first = track.querySelector('.ticker-content');
+      if (!first) return;
+      track.dataset.unit = first.innerHTML;
+      track.dataset.contentClass = first.getAttribute('class') || 'ticker-content';
+    }
+    const unit = track.dataset.unit;
+    const cls = track.dataset.contentClass || 'ticker-content';
+
+    // Mesure la largeur d'un motif et celle du conteneur.
+    track.innerHTML = '<div class="' + cls + '">' + unit + '</div>';
+    const unitW = track.firstElementChild.getBoundingClientRect().width;
+    const contW = wrap.getBoundingClientRect().width;
+
+    // Répète le motif pour qu'un groupe dépasse la largeur visible (pas plus).
+    let reps = 1;
+    if (unitW > 0) reps = Math.max(1, Math.ceil((contW + unitW) / unitW));
+    const group = unit.repeat(reps);
+
+    // Deux groupes identiques -> translateX(-50%) sans coupure.
+    track.innerHTML =
+      '<div class="' + cls + '">' + group + '</div>' +
+      '<div class="' + cls + '" aria-hidden="true">' + group + '</div>';
+
+    const year = new Date().getFullYear();
+    track.querySelectorAll('.current-year').forEach(el => { el.textContent = year; });
+    track.dataset.marquee = 'ready';
   }
-});
+
+  function buildAllTickers() {
+    document.querySelectorAll('.ticker-track').forEach(buildTicker);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('ticker-container');
+    if (container) {
+      fetch('ticker.html')
+        .then(r => { if (!r.ok) throw new Error('Erreur de chargement du ticker'); return r.text(); })
+        .then(html => {
+          container.innerHTML = html;
+          const track = container.querySelector('.ticker-track');
+          if (track) buildTicker(track);
+        })
+        .catch(err => console.error('Ticker Load Error:', err));
+    }
+    // Tickers déjà présents dans la page (ex. blog)
+    document.querySelectorAll('.ticker-track').forEach(buildTicker);
+  });
+
+  // Recalcule après le chargement des polices et à chaque redimensionnement.
+  window.addEventListener('load', buildAllTickers);
+  let _tickerResize;
+  window.addEventListener('resize', () => {
+    clearTimeout(_tickerResize);
+    _tickerResize = setTimeout(buildAllTickers, 200);
+  });
 
    //footer
    document.addEventListener("DOMContentLoaded", () => {
