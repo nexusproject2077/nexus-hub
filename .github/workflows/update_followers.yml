@@ -42,7 +42,20 @@ jobs:
       run: cp fils/followers_data.json followers_data.json
 
     - name: Commit and push new data
+      id: commit
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: 'ACTION: Auto-update Instagram followers count'
         file_pattern: 'fils/followers_data.json followers_data.json'
+
+    # Le commit ci-dessus (fait via GITHUB_TOKEN) ne déclenche PAS le workflow
+    # de déploiement Firebase. On redéploie donc ici pour que nexus-hubs.web.app
+    # reflète immédiatement le nouveau nombre d'abonnés.
+    - name: Deploy to Firebase Hosting (refresh du compteur)
+      if: steps.commit.outputs.changes_detected == 'true'
+      uses: FirebaseExtended/action-hosting-deploy@v0
+      with:
+        repoToken: ${{ secrets.GITHUB_TOKEN }}
+        firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        channelId: live
+        projectId: nexus-hubs
