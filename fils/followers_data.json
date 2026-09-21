@@ -1,5 +1,5 @@
 {
-    "timestamp": 1789960499,
+    "timestamp": 1789991826,
     "followers": 1121,
-    "status": "failed_login: TooManyRedirects"
+    "status": "failed_fetch: ClientThrottledError"
 }
