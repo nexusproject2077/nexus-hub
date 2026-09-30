@@ -82,6 +82,19 @@
     'NEXUS HUB | CV': 'NEXUS HUB | Özgeçmiş'
   };
 
+  const RICH_TURKISH = {
+    'blog-intro': () => `Merhaba, ben <span class="highlight">Meric Koken</span>, <span id="user-age">${document.getElementById('user-age')?.textContent || '20'}</span> yaşındayım ve şu anda <span class="highlight">BUT MMI</span> (Multimedya ve İnternet Meslekleri) bölümünde birinci sınıf öğrencisiyim. Troyes IUT'de eğitim görüyorum. Web geliştirme yolculuğum çok daha önce başladı: <span class="highlight"><span id="coding-years">${document.getElementById('coding-years')?.textContent || '6'}</span> yıldır kod yazıyorum</span>, 2020’den beri.`,
+    'blog-tech-front': () => '<span class="highlight">Ön yüz:</span> HTML, CSS, JavaScript — temiz ve duyarlı arayüzler',
+    'blog-tech-back': () => '<span class="highlight">Arka yüz:</span> PHP, veritabanı yönetimi',
+    'blog-tech-data': () => '<span class="highlight">Veritabanları:</span> MySQL ve MongoDB — ilişkisel ve NoSQL',
+    'blog-tech-project': () => '<span class="highlight">Proje yönetimi:</span> SAE 105-106 proje yöneticisi (4 kişilik ekip), GANTT şemaları, risk yönetimi',
+    'blog-project-social': () => '<span class="highlight">Nexus Social:</span> Eksiksiz sosyal ağ — kimlik doğrulama, gerçek zamanlı mesajlaşma, oyunlaştırma.',
+    'blog-project-camera': () => '<span class="highlight">Nexus Camera:</span> Etkileşimli web kamerası uygulaması',
+    'blog-project-calculator': () => '<span class="highlight">Nexus Calculator:</span> İşlevsel ve sezgisel hesap makinesi',
+    'blog-project-ai': () => '<span class="highlight">Nexus AI:</span> Nexus ekosistemine entegre yapay zeka',
+    'blog-approach': () => 'Sadece kod yazmakla yetinmiyorum: <span class="highlight">yönetiyorum</span>. Bütünsel bakış, sorunları öngörme ve gerçekten çalışan çözümler sunma.'
+  };
+
   function normalized(value) { return value.replace(/\s+/g, ' ').trim(); }
   function translateNode(node) {
     const original = normalized(node.nodeValue);
@@ -99,6 +112,13 @@
     const nodes = [];
     while (walker.nextNode()) nodes.push(walker.currentNode);
     nodes.forEach(translateNode);
+    document.querySelectorAll('[data-i18n-rich]').forEach(el => {
+      const translate = RICH_TURKISH[el.dataset.i18nRich];
+      if (translate && el.dataset.translated !== 'tr') {
+        el.innerHTML = translate();
+        el.dataset.translated = 'tr';
+      }
+    });
     document.querySelectorAll('[placeholder]').forEach(el => {
       if (el.placeholder === 'Rechercher un service. (ou /)') el.placeholder = 'Bir hizmet ara. (veya /)';
       if (el.placeholder === 'Rechercher un projet. (ou appuyer sur /)') el.placeholder = 'Bir proje ara. (veya / tuşuna basın)';
