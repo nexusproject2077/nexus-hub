@@ -194,16 +194,26 @@
 <div id="footer-container"></div>
 </div>
 
+<script src="i18n.js?v=1"></script>
 <script src="nexus-shared.js?v=2"></script>
 <script>
 // ── Typewriter subtitle ─────────────────────────
 (function () {
   const el  = document.getElementById('subtitle');
-  const txt = "L'épicentre de l'intelligence collective. Connectez vos modules et expandez votre réseau.";
+  const texts = {
+    fr: "L'épicentre de l'intelligence collective. Connectez vos modules et expandez votre réseau.",
+    tr: 'Kolektif zekânın merkezi. Modüllerinizi bağlayın ve ağınızı genişletin.'
+  };
+  let txt = texts.fr;
   let i = 0;
-  function type() {
-    if (i < txt.length) { el.textContent += txt[i++]; setTimeout(type, 26 + Math.random() * 18); }
+  let typingRun = 0;
+  function type(run = typingRun) {
+    if (run !== typingRun) return;
+    if (i < txt.length) { el.textContent += txt[i++]; setTimeout(() => type(run), 26 + Math.random() * 18); }
   }
+  window.addEventListener('nexus:locale', event => {
+    if (event.detail.locale === 'tr') { txt = texts.tr; i = 0; typingRun++; el.textContent = ''; type(); }
+  });
   setTimeout(type, 500);
 })();
 

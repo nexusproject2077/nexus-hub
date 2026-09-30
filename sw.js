@@ -1,4 +1,4 @@
-const CACHE = 'nexus-v7';
+const CACHE = 'nexus-v8';
 const ASSETS = [
   './',
   './index.html',
@@ -9,6 +9,7 @@ const ASSETS = [
   './cv.html',
   './nexus-base.css',
   './nexus-shared.js',
+  './i18n.js',
   './manifest.json',
   './favicon.png',
   './followers_data.json',
