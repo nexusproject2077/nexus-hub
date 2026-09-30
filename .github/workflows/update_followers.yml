@@ -1,9 +1,6 @@
 name: Update Instagram Followers Count
 
 on:
-  # Toutes les 6 heures
-  schedule:
-    - cron: '0 */6 * * *'
   # Déclenchement manuel
   workflow_dispatch:
 
