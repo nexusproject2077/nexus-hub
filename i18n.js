@@ -52,6 +52,17 @@
     'HTML, CSS, JS, PHP, MySQL, MongoDB, Python - apprentissage en continu sur projets personnels.': 'HTML, CSS, JS, PHP, MySQL, MongoDB, Python - kişisel projelerde sürekli öğrenme.',
     "Assistant IA intégré à l'écosystème Nexus. Interface conversationnelle et réponses contextuelles.": 'Nexus ekosistemine entegre yapay zeka asistanı. Konuşma arayüzü ve bağlamsal yanıtlar.',
     'Calculatrice & convertisseur de précision avec historique des calculs et raccourcis clavier.': 'Hesap geçmişi ve klavye kısayollarıyla hassas hesap makinesi ve dönüştürücü.'
+    ,'Salut, je m’appelle': 'Merhaba, ben', ", j'ai": ', yaşım', 'ans et je suis actuellement en première année de': 've şu anda birinci sınıf öğrencisiyim',
+    "(Métiers du Multimédia et de l'Internet) à l'IUT de Troyes.": "(Multimedya ve İnternet Meslekleri), Troyes IUT'de.",
+    'Mais mon parcours dans le développement web a commencé bien avant : ça fait maintenant': 'Ancak web geliştirme yolculuğum çok daha önce başladı:',
+    'ans que je code': 'yıldır kod yazıyorum', ', depuis 2020.': ', 2020’den beri.',
+    'HTML, CSS, JavaScript - interfaces propres et responsive': 'HTML, CSS, JavaScript - temiz ve duyarlı arayüzler',
+    'PHP, gestion de bases de données': 'PHP, veritabanı yönetimi', 'MySQL et MongoDB - relationnel et NoSQL': 'MySQL ve MongoDB - ilişkisel ve NoSQL',
+    'Chef de projet SAE 105-106 (équipe de 4), diagrammes GANTT, gestion des risques': 'SAE 105-106 proje yöneticisi (4 kişilik ekip), GANTT şemaları, risk yönetimi',
+    'Réseau social complet - auth, messagerie temps réel, gamification.': 'Eksiksiz sosyal ağ - kimlik doğrulama, gerçek zamanlı mesajlaşma, oyunlaştırma.',
+    'Application caméra web interactive': 'Etkileşimli web kamerası uygulaması', 'Calculatrice fonctionnelle et intuitive': 'İşlevsel ve sezgisel hesap makinesi',
+    "Intelligence artificielle intégrée à l'écosystème Nexus": 'Nexus ekosistemine entegre yapay zeka',
+    'Je ne me contente pas de coder :': 'Sadece kod yazmakla yetinmiyorum:', 'Vision globale, anticipation des problèmes, livraison de solutions qui fonctionnent vraiment.': 'Bütünsel bakış, sorunları öngörme ve gerçekten çalışan çözümler sunma.'
   };
 
   const TITLES = {
