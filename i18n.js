@@ -83,7 +83,7 @@
   };
 
   const RICH_TURKISH = {
-    'blog-intro': () => `Merhaba, ben <span class="highlight">Meric Koken</span>, <span id="user-age">${document.getElementById('user-age')?.textContent || '20'}</span> yaşındayım ve şu anda <span class="highlight">BUT MMI</span> (Multimedya ve İnternet Meslekleri) bölümünde birinci sınıf öğrencisiyim. Troyes IUT'de eğitim görüyorum. Web geliştirme yolculuğum çok daha önce başladı: <span class="highlight"><span id="coding-years">${document.getElementById('coding-years')?.textContent || '6'}</span> yıldır kod yazıyorum</span>, 2020’den beri.`,
+    'blog-intro': () => `Merhaba, ben <span class="highlight">Meric Koken</span>, <span id="user-age">${document.getElementById('user-age')?.textContent || '20'}</span> yaşındayım ve şu anda <span class="highlight">BUT MMI</span> (Multimedya ve İnternet Meslekleri) bölümünde ikinci sınıf öğrencisiyim. Troyes IUT'de eğitim görüyorum. Web geliştirme yolculuğum çok daha önce başladı: <span class="highlight"><span id="coding-years">${document.getElementById('coding-years')?.textContent || '6'}</span> yıldır kod yazıyorum</span>, 2020’den beri.`,
     'blog-tech-front': () => '<span class="highlight">Ön yüz:</span> HTML, CSS, JavaScript — temiz ve duyarlı arayüzler',
     'blog-tech-back': () => '<span class="highlight">Arka yüz:</span> PHP, veritabanı yönetimi',
     'blog-tech-data': () => '<span class="highlight">Veritabanları:</span> MySQL ve MongoDB — ilişkisel ve NoSQL',
