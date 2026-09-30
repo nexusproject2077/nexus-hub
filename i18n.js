@@ -63,6 +63,15 @@
     'Application caméra web interactive': 'Etkileşimli web kamerası uygulaması', 'Calculatrice fonctionnelle et intuitive': 'İşlevsel ve sezgisel hesap makinesi',
     "Intelligence artificielle intégrée à l'écosystème Nexus": 'Nexus ekosistemine entegre yapay zeka',
     'Je ne me contente pas de coder :': 'Sadece kod yazmakla yetinmiyorum:', 'Vision globale, anticipation des problèmes, livraison de solutions qui fonctionnent vraiment.': 'Bütünsel bakış, sorunları öngörme ve gerçekten çalışan çözümler sunma.'
+    ,'Article — 2025': 'Makale — 2025', 'Meric Koken | Développeur Web Full-Stack & Chef de Projet': 'Meric Koken | Full-Stack Web Geliştiricisi ve Proje Yöneticisi'
+    ,"Salut, je m'appelle": 'Merhaba, ben', "(Métiers du Multimédia et de l'Internet) à l'IUT de Troyes.": "(Multimedya ve İnternet Meslekleri), Troyes IUT'de."
+    ,'Mais mon parcours dans le développement web a commencé bien avant : ça fait maintenant': 'Ancak web geliştirme yolculuğum çok daha önce başladı:'
+    ,'HTML, CSS, JavaScript — interfaces propres et responsive': 'HTML, CSS, JavaScript — temiz ve duyarlı arayüzler'
+    ,'MySQL et MongoDB — relationnel et NoSQL': 'MySQL ve MongoDB — ilişkisel ve NoSQL'
+    ,"Plusieurs projets qui montrent l'étendue de mes compétences :": 'Becerilerimin kapsamını gösteren çeşitli projeler:'
+    ,'Réseau social complet — auth, messagerie temps réel, gamification.': 'Eksiksiz sosyal ağ — kimlik doğrulama, gerçek zamanlı mesajlaşma, oyunlaştırma.'
+    ,'Analyse des modules et réalisations — code source, études de cas.': 'Modüllerin ve çalışmaların analizi — kaynak kod, vaka çalışmaları.'
+    ,'Matrice des langages et protocoles maîtrisés — stacks, frameworks.': 'Hakim olunan diller ve protokoller matrisi — teknolojiler, çerçeveler.'
   };
 
   const TITLES = {
@@ -92,6 +101,7 @@
     nodes.forEach(translateNode);
     document.querySelectorAll('[placeholder]').forEach(el => {
       if (el.placeholder === 'Rechercher un service. (ou /)') el.placeholder = 'Bir hizmet ara. (veya /)';
+      if (el.placeholder === 'Rechercher un projet. (ou appuyer sur /)') el.placeholder = 'Bir proje ara. (veya / tuşuna basın)';
     });
   }
 
