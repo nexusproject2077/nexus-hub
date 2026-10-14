@@ -1,5 +1,5 @@
 {
-    "timestamp": 1791948471,
+    "timestamp": 1791976100,
     "followers": 1121,
-    "status": "failed_fetch: ClientThrottledError"
+    "status": "failed_login: ClientUnauthorizedError"
 }
