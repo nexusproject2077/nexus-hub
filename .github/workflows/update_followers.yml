@@ -1,61 +1,96 @@
 name: Update Instagram Followers Count
 
 on:
-  # Toutes les 6 heures
   schedule:
     - cron: '0 */6 * * *'
-  # Déclenchement manuel
   workflow_dispatch:
+
+# Evite deux mises a jour du compteur en parallele.
+concurrency:
+  group: instagram-followers-update
+  cancel-in-progress: false
 
 jobs:
   update-data:
     runs-on: ubuntu-latest
-
-    # Droits d'écriture pour committer le JSON mis à jour
     permissions:
       contents: write
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.x'
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
 
-    - name: Install dependencies (instagrapi)
-      run: |
-        python -m pip install --upgrade pip
-        pip install instagrapi
+      - name: Install dependencies (instagrapi)
+        run: |
+          python -m pip install --upgrade pip
+          pip install instagrapi
 
-    - name: Fetch followers via instagrapi
-      env:
-        INSTA_USERNAME: ${{ secrets.INSTA_USERNAME }}
-        # Recommandé : cookie de session (aucun mot de passe en clair)
-        INSTA_SESSION_ID: ${{ secrets.INSTA_SESSION_ID }}
-        # Optionnel, utilisé seulement si INSTA_SESSION_ID est absent
-        INSTA_PASSWORD: ${{ secrets.INSTA_PASSWORD }}
-      run: python fetch_followers_instagrapi.py
+      - name: Fetch followers via instagrapi
+        env:
+          INSTA_USERNAME: ${{ secrets.INSTA_USERNAME }}
+          INSTA_SESSION_ID: ${{ secrets.INSTA_SESSION_ID }}
+          INSTA_PASSWORD: ${{ secrets.INSTA_PASSWORD }}
+        run: python fetch_followers_instagrapi.py
 
-    - name: Copy data to root for web access
-      run: cp fils/followers_data.json followers_data.json
+      - name: Copy data to root for web access
+        run: cp fils/followers_data.json followers_data.json
 
-    - name: Commit and push new data
-      id: commit
-      uses: stefanzweifel/git-auto-commit-action@v5
-      with:
-        commit_message: 'ACTION: Auto-update Instagram followers count'
-        file_pattern: 'fils/followers_data.json followers_data.json'
+      # Conserve les nouvelles donnees et repart du dernier main a chaque
+      # tentative : aucun push force, aucun rebase conflictuel.
+      - name: Commit and push followers data (retry on concurrent updates)
+        id: commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          tmpdir="$(mktemp -d)"
+          trap 'rm -rf "$tmpdir"' EXIT
+          cp fils/followers_data.json "$tmpdir/nested.json"
+          cp followers_data.json "$tmpdir/root.json"
 
-    # Le commit ci-dessus (fait via GITHUB_TOKEN) ne déclenche PAS le workflow
-    # de déploiement Firebase. On redéploie donc ici pour que nexus-hubs.web.app
-    # reflète immédiatement le nouveau nombre d'abonnés.
-    - name: Deploy to Firebase Hosting (refresh du compteur)
-      if: steps.commit.outputs.changes_detected == 'true'
-      uses: FirebaseExtended/action-hosting-deploy@v0
-      with:
-        repoToken: ${{ secrets.GITHUB_TOKEN }}
-        firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-        channelId: live
-        projectId: nexus-hubs
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git checkout main
+            git reset --hard origin/main
+            cp "$tmpdir/nested.json" fils/followers_data.json
+            cp "$tmpdir/root.json" followers_data.json
+            git add -- fils/followers_data.json followers_data.json
+
+            if git diff --cached --quiet; then
+              echo "changes_detected=false" >> "$GITHUB_OUTPUT"
+              echo "Follower data already up to date."
+              exit 0
+            fi
+
+            git commit -m "ACTION: Auto-update Instagram followers count"
+            if git push origin HEAD:main; then
+              echo "changes_detected=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+
+            echo "Push conflict on attempt $attempt; retrying against latest main."
+            sleep 3
+          done
+
+          echo "::error::Could not push followers data after 5 attempts."
+          exit 1
+
+      # GITHUB_TOKEN commits do not trigger the regular Firebase deploy workflow.
+      - name: Deploy to Firebase Hosting (refresh du compteur)
+        if: steps.commit.outputs.changes_detected == 'true'
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          channelId: live
+          projectId: nexus-hubs
