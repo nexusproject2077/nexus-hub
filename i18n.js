@@ -8,6 +8,19 @@
   'use strict';
 
   const TURKISH = {
+    'Le projet phare': 'Öne çıkan proje',
+    'Créez des liens, partagez vos idées et développez votre réseau.': 'Bağ kurun, fikirlerinizi paylaşın ve ağınızı genişletin.',
+    'Les essentiels': 'Temel hizmetler',
+    'Envoyez vos gros fichiers en toute simplicité.': 'Büyük dosyalarınızı kolayca gönderin.',
+    'Explorez vos idées avec un assistant intelligent.': 'Akıllı bir asistanla fikirlerinizi keşfedin.',
+    'Découvrez les produits de la boutique.': 'Mağazadaki ürünleri keşfedin.',
+    'Outils rapides': 'Hızlı araçlar',
+    'Calculez en un instant.': 'Anında hesaplayın.',
+    'Traduisez vos textes facilement.': 'Metinlerinizi kolayca çevirin.',
+    'À découvrir': 'Keşfedin',
+    'Échangez et faites de nouvelles rencontres près de chez vous.': 'Yakınınızdaki insanlarla sohbet edin ve tanışın.',
+    'Projets et parcours.': 'Projeler ve kariyer.',
+    'Idées et explorations.': 'Fikirler ve keşifler.',
     'abonnés': 'takipçi', 'Core Stable': 'Çekirdek kararlı',
     'Neural Assistant': 'Yapay zeka asistanı', 'Precision V4': 'Hassasiyet V4',
     'Accéder': 'Eriş', 'Assistant Neural': 'Yapay zeka asistanı',
@@ -92,6 +105,10 @@
     nodes.forEach(translateNode);
     document.querySelectorAll('[placeholder]').forEach(el => {
       if (el.placeholder === 'Rechercher un service. (ou /)') el.placeholder = 'Bir hizmet ara. (veya /)';
+      if (el.placeholder === 'Rechercher un service...') {
+        el.placeholder = 'Bir hizmet ara...';
+        el.setAttribute('aria-label', el.placeholder);
+      }
     });
   }
 
