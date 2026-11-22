@@ -28,6 +28,10 @@
 .tile-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; }
 .card-icon { color: #d6d6dc; font-size: 23px; }
 .tile-arrow { color: #92929c; font-size: 20px; line-height: 1; }
+.nexus-arrow { display: block; width: 19px; height: 19px; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; transition: transform .2s ease, color .2s ease; }
+.hero-cta .nexus-arrow { width: 16px; height: 16px; }
+.project-tile:hover .nexus-arrow, .hero-cta:hover .nexus-arrow { transform: translate(2px, -2px); }
+.project-tile:hover .nexus-arrow { color: #fff; }
 .hub-section h3 { font-size: 16px; letter-spacing: -.03em; font-weight: 600; margin: 0 0 7px; }
 .hub-section p { color: #a5a5af; font-size: 14px; line-height: 1.55; margin: 0; }
 .compact-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
