@@ -10,7 +10,7 @@
 .hub-profile { justify-self: end; font-size: 13px; font-weight: 500; padding: 5px 10px 5px 5px; border: 1px solid #29292d; border-radius: 40px; }
 .hub-profile img { border-radius: 50%; object-fit: cover; }
 .hub-search { position: relative; display: flex; align-items: center; min-width: 0; }
-.hub-search > .search-icon { position: absolute; left: 13px; z-index: 2; color: #a1a1aa; pointer-events: none; width: 17px; height: 17px; }
+.hub-search > i { position: absolute; left: 15px; z-index: 2; color: #a1a1aa; pointer-events: none; font-size: 13px; }
 .hub-search input { position: relative; z-index: 1; width: 100%; height: 44px; padding: 0 46px 0 37px; border: 1px solid #29292d; border-radius: 10px; background: #111114; color: #fff; font: inherit; font-size: 14px; }
 .hub-search input::placeholder { color: #a1a1aa; }
 .hub-search kbd { position: absolute; right: 10px; z-index: 2; color: #a1a1aa; border: 1px solid #38383c; padding: 2px 7px; border-radius: 5px; font-size: 12px; pointer-events: none; }
@@ -33,7 +33,7 @@
 .compact-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .compact-tile, .resource-link { display: flex; align-items: center; gap: 16px; padding: 17px 20px; min-height: 76px; border-radius: 10px; }
 .compact-tile { background: #101012; border-color: #252529; }
-.compact-tile .card-icon, .resource-link .resource-icon { width: 22px; height: 22px; flex-shrink: 0; color: #a5a5af; }
+.compact-tile .card-icon, .resource-link > i { width: 26px; flex-shrink: 0; text-align: center; font-size: 18px; color: #a5a5af; }
 .compact-tile > div, .resource-link > div { flex: 1; min-width: 0; }
 .compact-tile h3, .resource-link h3 { font-size: 14px; margin-bottom: 3px; }
 .compact-tile p, .resource-link p { font-size: 13px; }
@@ -49,12 +49,6 @@
 .search-status { color: #a1a1aa; padding: 20px 0; margin: 0; font-size: 14px; }
 .hub-main.is-searching { padding-top: 32px; }
 .hub-main.is-searching .hub-hero { padding: 44px 0; }
-.nexus-icon-library { position: absolute; width: 0; height: 0; overflow: hidden; pointer-events: none; }
-.nexus-icon { display: inline-block; width: 20px; height: 20px; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: 1.65; stroke-linecap: round; stroke-linejoin: round; }
-.project-tile .card-icon { width: 30px; height: 30px; }
-.tile-arrow.nexus-icon { width: 17px; height: 17px; transition: color .2s, transform .2s; }
-.project-tile:hover .tile-arrow, .compact-tile:hover .tile-arrow, .resource-link:hover .tile-arrow { color: #fff; transform: translateX(2px); }
-.hero-cta .nexus-icon, #scroll-top .nexus-icon { width: 16px; height: 16px; }
 @media (max-width: 700px) {
   .hub-shell { width: calc(100% - 36px); }
   .hub-header { grid-template-columns: 1fr 1fr; gap: 16px; padding: 16px 0; }
