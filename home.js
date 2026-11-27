@@ -26,6 +26,8 @@
       ? (tr ? 'Hizmet bulunamadı.' : 'Aucun service trouvé. Essayez un autre mot.')
       : (tr ? count + ' hizmet bulundu' : count + (count === 1 ? ' service trouvé' : ' services trouvés'));
   }
+  const urlQuery = new URLSearchParams(location.search).get('q');
+  if (urlQuery) { input.value = urlQuery; filter(); }
   input.addEventListener('input', filter);
   window.addEventListener('nexus:locale', filter);
 })();
