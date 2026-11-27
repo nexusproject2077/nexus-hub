@@ -1,7 +1,8 @@
-const CACHE = 'nexus-v12';
+const CACHE = 'nexus-v13';
 const ASSETS = [
   './',
   './index.html',
+  './mmi.html',
   './archive.html',
   './blog.html',
   './projets.html',
@@ -12,7 +13,7 @@ const ASSETS = [
   './inner.js?v=1',
   './nexus-shared.js',
   './i18n.js',
-  './home.css?v=3',
+  './home.css?v=4',
   './home.js?v=1',
   './i18n.js?v=2',
   './nexus-base.css?v=4',

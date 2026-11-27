@@ -72,3 +72,6 @@
   .hub-home .tilt-card { transform: none !important; }
   .hub-home .jeran-logo path { stroke-dashoffset: 0; }
 }
+
+/* Three clean resource entries on wide screens; retain compact stacking on mobile. */
+@media (min-width: 900px) { .resources-section .compact-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
