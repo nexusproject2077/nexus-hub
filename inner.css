@@ -1,0 +1,44 @@
+/* Nexus Hub · shared secondary-page design */
+body.nh-inner { background:#080809; }
+.nh-inner .scanlines { display:none; }
+.nh-inner .wrap { width:100%; min-height:100vh; display:flex; flex-direction:column; align-items:center; }
+.nh-header { width:min(100% - 48px,1120px); display:grid; grid-template-columns:1fr minmax(240px,360px) 1fr; gap:24px; align-items:center; padding:26px 0; border-bottom:1px solid #222225; }
+.nh-brand,.nh-profile { display:inline-flex; align-items:center; gap:10px; white-space:nowrap; color:#f5f5f7; text-decoration:none; }
+.nh-brand { justify-self:start; font-weight:700; font-size:16px; letter-spacing:-.045em; }
+.nh-brand .jeran-logo { width:32px; height:32px; }
+.nh-muted { color:#a1a1aa; font-weight:500; }
+.nh-profile { justify-self:end; font-size:13px; font-weight:500; border:1px solid #29292d; border-radius:40px; padding:5px 10px 5px 5px; }
+.nh-profile img { border-radius:50%; object-fit:cover; }
+.nh-search { position:relative; min-width:0; }
+.nh-search i { position:absolute; top:50%; left:15px; transform:translateY(-50%); color:#a1a1aa; font-size:13px; pointer-events:none; }
+.nh-search input { width:100%; height:44px; padding:0 43px 0 37px; border:1px solid #29292d; border-radius:10px; background:#111114; color:#fff; font:inherit; font-size:14px; outline:none; }
+.nh-search input:focus { border-color:#707078; }
+.nh-search input::placeholder { color:#a1a1aa; }
+.nh-search kbd { position:absolute; right:12px; top:50%; transform:translateY(-50%); border:1px solid #38383c; border-radius:5px; color:#a1a1aa; padding:2px 6px; font-size:12px; pointer-events:none; }
+.nh-inner main { width:min(100% - 48px,860px); padding:76px 0 90px; flex:1; }
+.nh-inner main > section:first-child h2 { font-size:clamp(34px,5vw,56px); letter-spacing:-.055em; font-weight:700; line-height:1.13; }
+.nh-inner main > section:first-child p { color:#a5a5af; line-height:1.7; }
+.nh-inner .nexus-card, .nh-inner .article-card, .nh-inner .skill-row, .nh-inner .soft-pill { border:1px solid #29292d; background:#111114; border-radius:14px; }
+.nh-inner .nexus-card:hover, .nh-inner .skill-row:hover, .nh-inner .soft-pill:hover { border-color:#505057; }
+.nh-inner .archive-card { padding:28px; }
+.nh-inner .article-card { padding:clamp(22px,5vw,44px); }
+.nh-inner .article-card p, .nh-inner .article-card li { line-height:1.75; }
+.nh-inner .quote-block { background:#151518; border-left-color:#51515b; }
+.nh-inner .highlight { color:#ededf0; }
+.nh-inner .skill-bar { background:linear-gradient(90deg,#85858d,#f0f0f2); }
+.nh-inner .skill-row:hover .skill-icon-sm { color:#fff; filter:none; }
+.nh-inner .soft-pill:hover { background:#19191c; }
+.nh-inner .lvl-expert,.nh-inner .lvl-avance,.nh-inner .lvl-intermediaire { color:#d5d5db; }
+.nh-inner .filter-btn { border-radius:8px; cursor:pointer; font-family:Inter,sans-serif; font-size:12px; text-transform:none; letter-spacing:0; padding:9px 14px; color:#a5a5af; }
+.nh-inner .filter-btn.active,.nh-inner .filter-btn:hover { background:#efeff1; border-color:#efeff1; color:#101014; }
+.nh-inner .status-live,.nh-inner .status-dev,.nh-inner .status-archive { color:#aaaab1; background:#17171a; border-color:#333339; }
+.nh-inner .tech-tag,.nh-inner .cv-tag { border-color:#34343b; border-radius:6px; color:#aaaab1; }
+.nh-inner .btn-outline { cursor:pointer; border-radius:8px; color:#c6c6ce; }
+.nh-inner a:focus-visible,.nh-inner button:focus-visible,.nh-inner input:focus-visible { outline:2px solid #eee; outline-offset:3px; }
+.nh-footer { width:min(100% - 48px,1120px); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:22px; border-top:1px solid #222225; padding:26px 0; color:#a1a1aa; font-size:12px; }
+.nh-footer p { margin:0; letter-spacing:.08em; }
+.nh-footer nav { display:flex; gap:22px; flex-wrap:wrap; }
+.nh-footer a { color:inherit; text-decoration:none; }
+.nh-footer a:hover { color:#fff; }
+@media(max-width:700px){ .nh-header { width:calc(100% - 36px); grid-template-columns:1fr 1fr; gap:16px; padding:16px 0; }.nh-search { grid-column:1/-1; grid-row:2; }.nh-search kbd { display:none; }.nh-inner main { width:calc(100% - 36px); padding:54px 0 70px; }.nh-footer { width:calc(100% - 36px); align-items:flex-start; flex-direction:column; } }
+@media print { .nh-header,.nh-footer { display:none !important; } .nh-inner main { padding:0; width:100%; } .nh-inner .skill-row,.nh-inner .nexus-card { background:#fff !important; color:#111 !important; } }
