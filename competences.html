@@ -75,8 +75,9 @@
   .lvl-intermediaire { color: #fcd34d; }
   .lvl-basique     { color: #9ca3af; }
 </style>
+<link rel="stylesheet" href="inner.css?v=1">
 </head>
-<body class="flex flex-col items-center">
+<body class="flex flex-col items-center nh-inner">
 
 <canvas id="bg"></canvas>
 <div id="spotlight"></div>
@@ -88,41 +89,19 @@
 <div class="wrap w-full flex flex-col items-center">
 
   <!-- Header -->
-  <header class="w-full max-w-6xl px-6 py-8 flex justify-between items-center fade-up d1">
-    <div class="flex items-center gap-4">
-      <a href="index.html" class="flex items-center">
-        <svg class="jeran-logo" viewBox="0 0 64 64" aria-label="NEXUS HUB" role="img">
-          <path class="j1" d="M40 8 L8 26 L36 38"/>
-          <path class="j2" d="M28 26 L56 38 L24 56"/>
-        </svg>
-        <h1 class="text-xl font-bold tracking-tight glitch" data-text="NEXUS HUB">
-          NEXUS <span class="font-light text-zinc-500">HUB</span>
-        </h1>
-      </a>
-      <div class="hidden md:block h-4 w-px bg-[#222]"></div>
-      <span class="hidden md:block text-[10px] text-zinc-600 mono uppercase tracking-widest" id="system-time">00:00:00</span>
-    </div>
-    <a class="insta-pill flex items-center gap-3 px-3 py-1.5 rounded-full border border-[#222]"
-       href="https://www.instagram.com/merickn/" target="_blank">
-      <div class="text-right">
-        <p class="text-[10px] font-semibold leading-none text-white">@merickn</p>
-        <p class="text-[9px] text-zinc-500 leading-none mt-0.5"><span id="follower-count">1 234</span> abonnés</p>
-      </div>
-      <img alt="Profile" class="w-6 h-6 rounded-full object-cover"
-        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDr64yMXYw0xB7ANsOhknluhk80IuEfnWigXyg7LOUsjqVpCyLkTeXxP28mRuN4uEoqfkrD5A_1vB0qQx3e5gOVPNR0nfBUlECHeN2m-Al1h_YKfWTs-MvgP2usQWCENZDxjBFnWXNaVc3DQG6VPh_7RGWFwGXr2nqTpwLorGOxDBwVRTMmpQVWtSHq9hDBjERH7FDvwJVF4TtAsp7B--SwIowDYhEIeV8NLu3ok10J8D2zTa9bfBOY9zmz0LC9Nd9YS6HD-s4G82a_"/>
-    </a>
-  </header>
-
- <!-- Ticker Injection Point -->
-<div class="ticker-wrap w-full py-2 fade-up d2">
-    <div class="ticker-track mono text-[9px] uppercase tracking-widest text-zinc-700">
-      <div class="ticker-content flex gap-6 pr-6">
-        <span>NEXUS HUB</span><span>◆</span><span>Core Stable</span><span>◆</span><span>Uptime 99.9%</span><span>◆</span><span>Neural Assistant</span><span>◆</span><span>Precision V4</span><span>◆</span><span class="current-year"></span><span>◆</span>
-      </div>
-    </div>
-  </div>
-
-  <main class="w-full max-w-3xl px-6 py-16 space-y-16">
+  <header class="nh-header fade-up d1">
+  <a class="nh-brand" href="index.html" aria-label="Nexus Hub — accueil">
+    <svg class="jeran-logo" viewBox="0 0 64 64" aria-hidden="true"><path class="j1" d="M 33 11 L 16 27 L 33 43"/><path class="j2" d="M 35 25 L 51 41 L 35 57"/></svg>
+    <span>NEXUS <span class="nh-muted">HUB</span></span>
+  </a>
+  <form class="nh-search" action="index.html" method="get" role="search">
+    <i class="fas fa-search" aria-hidden="true"></i>
+    <input name="q" type="search" placeholder="Rechercher un service..." aria-label="Rechercher un service..." autocomplete="off">
+    <kbd aria-hidden="true">/</kbd>
+  </form>
+  <a class="nh-profile" href="https://www.instagram.com/merickn/" target="_blank" rel="noopener noreferrer"><img src="ma_photo_insta.jpg" alt="" width="28" height="28"><span>@merickn</span></a>
+</header>
+<main class="w-full max-w-3xl px-6 py-16 space-y-16">
 
     <!-- Page header -->
     <section class="space-y-2 fade-up d2">
@@ -312,18 +291,7 @@
 
   </main>
 
-  <footer class="w-full max-w-6xl px-6 py-10 mt-4 border-t border-[#111] flex flex-col md:flex-row justify-between items-center gap-6">
-    <p class="text-[10px] tracking-[.2em] text-zinc-600 uppercase">
-      Nexus-Hub <span class="text-zinc-800 px-2">|</span> <span class="current-year">2026</span>
-    </p>
-    <div class="flex gap-8 text-[9px] mono uppercase tracking-widest text-zinc-700">
-      <span class="flex items-center gap-2">
-        <span class="w-1.5 h-1.5 bg-emerald-600 rounded-full pulse inline-block"></span>
-        Core Stable
-      </span>
-      <span>Uptime 99.9%</span>
-    </div>
-  </footer>
+  <footer class="nh-footer"><p>NEXUS HUB — <span class="current-year">2026</span></p><nav aria-label="Liens essentiels"><a href="index.html">Accueil</a><a href="archive.html">Archive</a><a href="blog.html">Blog</a><a href="https://www.instagram.com/merickn/" target="_blank" rel="noopener noreferrer">@merickn</a></nav></footer>
 
 </div>
 
