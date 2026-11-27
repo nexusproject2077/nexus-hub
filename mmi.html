@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080809">
+  <meta name="description" content="Projets universitaires BUT MMI à l’IUT de Troyes — développement web, communication, création graphique et audiovisuel.">
+  <title>BUT MMI — Nexus Hub</title>
+  <link rel="icon" href="favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <style>
+    :root{color-scheme:dark;--bg:#080809;--surface:#111114;--surface-hover:#17171b;--stroke:#29292f;--soft:#a5a5af;--text:#f4f4f5}
+    *,*::before,*::after{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    button,input{font:inherit}
+    button{cursor:pointer}
+    :focus-visible{outline:2px solid #fff;outline-offset:4px}
+    .shell{width:min(1120px,calc(100% - 48px));margin-inline:auto}
+    .site-header{min-height:91px;display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:1px solid #242429}
+    .brand{display:inline-flex;align-items:center;gap:12px;font-size:16px;letter-spacing:-.05em;font-weight:700}
+    .brand svg{width:32px;height:32px;fill:none;stroke:#fff;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+    .brand .muted{color:#8e8e97;font-weight:500}
+    .back{display:inline-flex;align-items:center;gap:9px;color:#b9b9c1;font-size:13px;font-weight:500;transition:color .18s}
+    .back:hover{color:#fff}
+    .arrow{display:inline-block;width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+    .hero{padding:clamp(72px,10vw,128px) 0 52px;max-width:760px}
+    .eyebrow{margin:0 0 20px;font-size:11px;font-weight:600;letter-spacing:.17em;text-transform:uppercase;color:#9c9ca5}
+    h1{margin:0;font-size:clamp(52px,8vw,92px);line-height:1.04;letter-spacing:-.075em;font-weight:700}
+    .hero-copy{margin:24px 0 0;max-width:620px;color:#adadb7;font-size:clamp(16px,2.1vw,19px);line-height:1.7}
+    .overview{display:flex;gap:28px;flex-wrap:wrap;margin-top:30px;color:#898994;font-size:12px}
+    .overview strong{color:#f2f2f4;font-size:14px;font-weight:600}
+    .catalogue{padding-bottom:100px}
+    .tools{display:flex;gap:14px;align-items:center;justify-content:space-between;margin:0 0 26px;flex-wrap:wrap}
+    .search{position:relative;flex:1 1 270px;max-width:390px}
+    .search svg{position:absolute;left:15px;top:50%;transform:translateY(-50%);width:18px;height:18px;fill:none;stroke:#9b9ba5;stroke-width:1.8;stroke-linecap:round;pointer-events:none}
+    .search input{width:100%;height:46px;background:#111114;border:1px solid #303036;border-radius:10px;padding:0 43px 0 44px;color:#fff;font-size:14px;outline:none}
+    .search input:focus{border-color:#888890}
+    .search input::placeholder{color:#8d8d97}
+    .clear{display:none;position:absolute;right:9px;top:50%;transform:translateY(-50%);background:transparent;border:0;color:#a6a6af;padding:7px 8px;font-size:18px}
+    .search.has-query .clear{display:block}
+    .filters{display:flex;flex-wrap:wrap;gap:7px}
+    .filter{border:1px solid #303036;background:transparent;color:#a6a6b0;border-radius:8px;padding:11px 15px;font-size:12px;font-weight:600;transition:background .18s,border-color .18s,color .18s}
+    .filter:hover{border-color:#707078;color:#fff}
+    .filter.active{background:#f4f4f5;color:#111114;border-color:#f4f4f5}
+    .results{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:15px}
+    .results h2{margin:0;font-size:19px;letter-spacing:-.035em;font-weight:600}
+    .results p{margin:0;color:#898994;font-size:12px}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .project-card{display:flex;flex-direction:column;min-height:255px;padding:28px;border:1px solid var(--stroke);border-radius:14px;background:var(--surface);transition:transform .2s,border-color .2s,background .2s}
+    .project-card:hover{transform:translateY(-3px);border-color:#55555d;background:var(--surface-hover)}
+    .project-card[hidden]{display:none}
+    .card-top{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:19px}
+    .module{color:#c6c6ce;background:#1c1c21;border:1px solid #34343b;border-radius:6px;padding:6px 9px;font-size:10px;letter-spacing:.04em;font-weight:600}
+    .module span{color:#6e6e78;padding:0 4px}
+    .card-number{color:#5d5d68;font-size:11px;font-variant-numeric:tabular-nums}
+    .project-card h3{margin:0 0 11px;font-size:20px;font-weight:600;line-height:1.3;letter-spacing:-.04em}
+    .project-card p{color:#a7a7b0;font-size:13px;line-height:1.65;margin:0 0 28px}
+    .card-bottom{margin-top:auto;display:flex;align-items:flex-end;justify-content:space-between;gap:18px;flex-wrap:wrap}
+    .skills{display:flex;flex-wrap:wrap;gap:6px;max-width:100%}
+    .skills span{font-size:11px;color:#90909a;border:1px solid #303037;padding:5px 8px;border-radius:5px}
+    .project-link{display:inline-flex;align-items:center;gap:8px;font-size:12px;white-space:nowrap;font-weight:600;color:#ececf0;transition:opacity .2s}
+    .project-link:hover{opacity:.7}
+    .project-link svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+    .empty{padding:65px 20px;text-align:center;border:1px solid var(--stroke);border-radius:12px;color:#aaaab5}
+    .empty[hidden]{display:none}
+    .empty h3{color:#fff;margin:0 0 10px;font-size:18px}
+    .empty p{margin:0;font-size:14px}
+    .feedback{position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);background:#eeeef0;color:#141418;border-radius:10px;padding:12px 18px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:20}
+    .feedback.visible{opacity:1;transform:translate(-50%,0)}
+    .footer{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;border-top:1px solid #242429;padding:28px 0 36px;color:#90909a;font-size:12px}
+    .footer p{margin:0;letter-spacing:.09em}
+    .footer a{color:#c8c8cf}
+    @media(max-width:720px){.shell{width:calc(100% - 36px)}.site-header{min-height:76px}.hero{padding:70px 0 42px}.tools{align-items:stretch}.search{max-width:none;flex-basis:100%}.filters{width:100%}.filter{flex:1}.grid{grid-template-columns:1fr}.project-card{min-height:0;padding:23px}.catalogue{padding-bottom:64px}.footer{align-items:flex-start;flex-direction:column}}
+    @media(max-width:390px){.brand{font-size:14px}.back{font-size:12px}.filter{padding:11px 9px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}}
+  </style>
+</head>
+<body>
+  <header class="site-header shell">
+    <a class="brand" href="mmi.html" aria-label="Nexus MMI — accueil">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M33 11 16 27 33 43M35 25 51 41 35 57"/></svg>
+      <span>NEXUS <span class="muted">MMI</span></span>
+    </a>
+    <a href="index.html" class="back">Nexus Hub <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a>
+  </header>
+  <main class="shell">
+    <section class="hero" aria-labelledby="page-title">
+      <p class="eyebrow">Portfolio universitaire · IUT de Troyes</p>
+      <h1 id="page-title">BUT MMI<span style="color:#777781">.</span></h1>
+      <p class="hero-copy">Une sélection complète de mes projets de 1re et 2e année en Métiers du Multimédia et de l’Internet. Du développement web à la stratégie, en passant par le design et l’audiovisuel.</p>
+      <div class="overview"><span><strong>13</strong> projets</span><span><strong>02</strong> années</span><span>Création · Développement · Communication</span></div>
+    </section>
+    <section class="catalogue" aria-labelledby="catalogue-title">
+      <div class="tools">
+        <div class="search" role="search">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.2 15.2 5.3 5.3"/></svg>
+          <input id="project-search" type="search" placeholder="Rechercher un projet, une SAE, une compétence..." autocomplete="off" aria-label="Rechercher un projet" spellcheck="false">
+          <button type="button" class="clear" id="clear-search" aria-label="Effacer la recherche">×</button>
+        </div>
+        <div class="filters" role="group" aria-label="Filtrer par année">
+          <button type="button" class="filter active" data-filter="all" aria-pressed="true">Tout</button>
+          <button type="button" class="filter" data-filter="1" aria-pressed="false">1re année</button>
+          <button type="button" class="filter" data-filter="2" aria-pressed="false">2e année</button>
+        </div>
+      </div>
+      <div class="results"><h2 id="catalogue-title">Tous les projets</h2><p id="results-count" role="status" aria-live="polite">13 projets</p></div>
+      <div class="grid" id="projects-grid">
+        <article class="project-card" data-year="1" data-search="sae 101 the blooding line audit de communication numérique et diagnostic digital. communication audit mmi but 1">
+          <div class="card-top"><span class="module">BUT 1 <span aria-hidden="true">·</span> SAE 101</span><span class="card-number">01</span></div>
+          <h3>The Blooding Line</h3>
+          <p>Audit de communication numérique et diagnostic digital.</p>
+          <div class="card-bottom"><div class="skills" aria-label="Compétences"><span>Communication</span><span>Audit</span></div><a class="project-link" href="#" data-placeholder aria-label="Voir le projet The Blooding Line — lien à ajouter">Voir le projet <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a></div>
+        </article>
+        <article class="project-card" data-year="1" data-search="sae 102 stratégie de communication numérique recommandation marketing et plan de communication internationale. marketing stratégie mmi but 1">
+          <div class="card-top"><span class="module">BUT 1 <span aria-hidden="true">·</span> SAE 102</span><span class="card-number">02</span></div>
+          <h3>Stratégie de Communication Numérique</h3>
+          <p>Recommandation marketing et plan de communication internationale.</p>
+          <div class="card-bottom"><div class="skills" aria-label="Compétences"><span>Marketing</span><span>Stratégie</span></div><a class="project-link" href="#" data-placeholder aria-label="Voir le projet Stratégie de Communication Numérique — lien à ajouter">Voir le projet <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a></div>
+        </article>
+        <article class="project-card" data-year="1" data-search="sae 105 déploiement web &amp; serveur configuration d’un virtualhost apache et d’un environnement php sur vps linux. linux apache php mmi but 1">
+          <div class="card-top"><span class="module">BUT 1 <span aria-hidden="true">·</span> SAE 105</span><span class="card-number">03</span></div>
+          <h3>Déploiement Web &amp; Serveur</h3>
+          <p>Configuration d’un VirtualHost Apache et d’un environnement PHP sur VPS Linux.</p>
+          <div class="card-bottom"><div class="skills" aria-label="Compétences"><span>Linux</span><span>Apache</span><span>PHP</span></div><a class="project-link" href="#" data-placeholder aria-label="Voir le projet Déploiement Web &amp; Serveur — lien à ajouter">Voir le projet <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a></div>
+        </article>
+        <article class="project-card" data-year="1" data-search="projet web arboretum de loupessac conception et intégration d’un site vitrine immersif en mode sombre. html css ui mmi but 1">
+          <div class="card-top"><span class="module">BUT 1 <span aria-hidden="true">·</span> Projet web</span><span class="card-number">04</span></div>
+          <h3>Arboretum de Loupessac</h3>
+          <p>Conception et intégration d’un site vitrine immersif en mode sombre.</p>
+          <div class="card-bottom"><div class="skills" aria-label="Compétences"><span>HTML</span><span>CSS</span><span>UI</span></div><a class="project-link" href="#" data-placeholder aria-label="Voir le projet Arboretum de Loupessac — lien à ajouter">Voir le projet <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a></div>
+        </article>
+        <article class="project-card" data-year="1" data-search="projet web web file explorer (one ui) explorateur de fichiers web inspiré de samsung one ui, hébergé sur vps. web interface mmi but 1">
+          <div class="card-top"><span class="module">BUT 1 <span aria-hidden="true">·</span> Projet web</span><span class="card-number">05</span></div>
+          <h3>Web File Explorer (One UI)</h3>
+          <p>Explorateur de fichiers web inspiré de Samsung One UI, hébergé sur VPS.</p>
+          <div class="card-bottom"><div class="skills" aria-label="Compétences"><span>Web</span><span>Interface</span></div><a class="project-link" href="#" data-placeholder aria-label="Voir le projet Web File Explorer (One UI) — lien à ajouter">Voir le projet <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a></div>
+        </article>
+        <article class="project-card" data-year="1" data-search="identité visuelle mojo tunes création d’une identité visuelle et de déclinaisons graphiques vectorielles. adobe illustrator branding mmi but 1">
+          <div class="card-top"><span class="module">BUT 1 <span aria-hidden="true">·</span> Identité visuelle</span><span class="card-number">06</span></div>
+          <h3>MOJO TUNES</h3>
+          <p>Création d’une identité visuelle et de déclinaisons graphiques vectorielles.</p>
+          <div class="card-bottom"><div class="skills" aria-label="Compétences"><span>Adobe Illustrator</span><span>Branding</span></div><a class="project-link" href="#" data-placeholder aria-label="Voir le projet MOJO TUNES — lien à ajouter">Voir le projet <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a></div>
+        </article>
+        <article class="project-card" data-year="1" data-search="lab système lab linux &amp; docker — halloween administration système et déploiement d’environnements conteneurisés. linux docker mmi but 1">
+          <div class="card-top"><span class="module">BUT 1 <span aria-hidden="true">·</span> Lab système</span><span class="card-number">07</span></div>
+          <h3>Lab Linux &amp; Docker — Halloween</h3>
+          <p>Administration système et déploiement d’environnements conteneurisés.</p>
+          <div class="card-bottom"><div class="skills" aria-label="Compétences"><span>Linux</span><span>Docker</span></div><a class="project-link" href="#" data-placeholder aria-label="Voir le projet Lab Linux &amp; Docker — Halloween — lien à ajouter">Voir le projet <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a></div>
+        </article>
+        <article class="project-card" data-year="1" data-search="sae 203 e-sport hub application web dynamique complète, déployée en https sur serveur debian. php mysql vps mmi but 1">
+          <div class="card-top"><span class="module">BUT 1 <span aria-hidden="true">·</span> SAE 203</span><span class="card-number">08</span></div>
+          <h3>E-Sport Hub</h3>
+          <p>Application web dynamique complète, déployée en HTTPS sur serveur Debian.</p>
+          <div class="card-bottom"><div class="skills" aria-label="Compétences"><span>PHP</span><span>MySQL</span><span>VPS</span></div><a class="project-link" href="#" data-placeholder aria-label="Voir le projet E-Sport Hub — lien à ajouter">Voir le projet <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a></div>
+        </article>
+        <article class="project-card" data-year="1" data-search="wr209 alchimie céleste illustration d’une carte de tarot et direction artistique complète. design illustration mmi but 1">
+          <div class="card-top"><span class="module">BUT 1 <span aria-hidden="true">·</span> WR209</span><span class="card-number">09</span></div>
+          <h3>Alchimie Céleste</h3>
+          <p>Illustration d’une carte de tarot et direction artistique complète.</p>
+          <div class="card-bottom"><div class="skills" aria-label="Compétences"><span>Design</span><span>Illustration</span></div><a class="project-link" href="#" data-placeholder aria-label="Voir le projet Alchimie Céleste — lien à ajouter">Voir le projet <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a></div>
+        </article>
+        <article class="project-card" data-year="1" data-search="wr210 animation de texte réalisation vidéo et typographie cinétique. motion design vidéo mmi but 1">
+          <div class="card-top"><span class="module">BUT 1 <span aria-hidden="true">·</span> WR210</span><span class="card-number">10</span></div>
+          <h3>Animation de texte</h3>
+          <p>Réalisation vidéo et typographie cinétique.</p>
+          <div class="card-bottom"><div class="skills" aria-label="Compétences"><span>Motion Design</span><span>Vidéo</span></div><a class="project-link" href="#" data-placeholder aria-label="Voir le projet Animation de texte — lien à ajouter">Voir le projet <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a></div>
+        </article>
+        <article class="project-card" data-year="1" data-search="sae audiovisuel sous-titrage adaptation, synchronisation temporelle et accessibilité vidéo. audiovisuel mmi but 1">
+          <div class="card-top"><span class="module">BUT 1 <span aria-hidden="true">·</span> SAE Audiovisuel</span><span class="card-number">11</span></div>
+          <h3>Sous-titrage</h3>
+          <p>Adaptation, synchronisation temporelle et accessibilité vidéo.</p>
+          <div class="card-bottom"><div class="skills" aria-label="Compétences"><span>Audiovisuel</span></div><a class="project-link" href="#" data-placeholder aria-label="Voir le projet Sous-titrage — lien à ajouter">Voir le projet <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a></div>
+        </article>
+        <article class="project-card" data-year="2" data-search="wra307d art &amp; canvas projet entrepreneurial e-commerce, identité visuelle, modèle économique et vidéo pitch. entrepreneuriat design pitch mmi but 2">
+          <div class="card-top"><span class="module">BUT 2 <span aria-hidden="true">·</span> WRA307D</span><span class="card-number">12</span></div>
+          <h3>Art &amp; Canvas</h3>
+          <p>Projet entrepreneurial e-commerce, identité visuelle, modèle économique et vidéo pitch.</p>
+          <div class="card-bottom"><div class="skills" aria-label="Compétences"><span>Entrepreneuriat</span><span>Design</span><span>Pitch</span></div><a class="project-link" href="#" data-placeholder aria-label="Voir le projet Art &amp; Canvas — lien à ajouter">Voir le projet <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a></div>
+        </article>
+        <article class="project-card" data-year="2" data-search="saé 204 steve jobs dossier analytique, stratégie de marque et conception d’une présence en ligne. stratégie web mmi but 2">
+          <div class="card-top"><span class="module">BUT 2 <span aria-hidden="true">·</span> SAÉ 204</span><span class="card-number">13</span></div>
+          <h3>Steve Jobs</h3>
+          <p>Dossier analytique, stratégie de marque et conception d’une présence en ligne.</p>
+          <div class="card-bottom"><div class="skills" aria-label="Compétences"><span>Stratégie</span><span>Web</span></div><a class="project-link" href="#" data-placeholder aria-label="Voir le projet Steve Jobs — lien à ajouter">Voir le projet <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a></div>
+        </article>
+      </div>
+      <div class="empty" id="empty" hidden><h3>Aucun projet trouvé</h3><p>Essayez un autre mot-clé ou changez de filtre.</p></div>
+    </section>
+  </main>
+  <footer class="footer shell"><p>NEXUS HUB — <span id="year">2026</span></p><a href="index.html">Retour à Nexus Hub</a></footer>
+  <div class="feedback" role="status" aria-live="polite" id="feedback">Lien du projet à ajouter prochainement.</div>
+  <script>
+    (() => {
+      const input = document.getElementById('project-search');
+      const cards = [...document.querySelectorAll('.project-card')];
+      const filters = [...document.querySelectorAll('[data-filter]')];
+      const count = document.getElementById('results-count');
+      const heading = document.getElementById('catalogue-title');
+      const empty = document.getElementById('empty');
+      const searchBox = document.querySelector('.search');
+      const normalize = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+      let activeYear = 'all';
+      function render() {
+        const words = normalize(input.value).split(/\s+/).filter(Boolean);
+        let visible = 0;
+        cards.forEach(card => {
+          const content = normalize(card.dataset.search);
+          const matches = (activeYear === 'all' || card.dataset.year === activeYear) && words.every(word => content.includes(word));
+          card.hidden = !matches;
+          if (matches) visible++;
+        });
+        count.textContent = visible + (visible === 1 ? ' projet' : ' projets');
+        heading.textContent = activeYear === 'all' ? 'Tous les projets' : (activeYear === '1' ? 'Projets · 1re année' : 'Projets · 2e année');
+        empty.hidden = visible !== 0;
+        searchBox.classList.toggle('has-query', Boolean(input.value));
+      }
+      filters.forEach(button => button.addEventListener('click', () => {
+        activeYear = button.dataset.filter;
+        filters.forEach(item => {
+          const active = item === button;
+          item.classList.toggle('active', active);
+          item.setAttribute('aria-pressed', String(active));
+        });
+        render();
+      }));
+      input.addEventListener('input', render);
+      document.getElementById('clear-search').addEventListener('click', () => { input.value = ''; input.focus(); render(); });
+      document.addEventListener('keydown', event => {
+        const target = document.activeElement;
+        if (event.key === '/' && !target.matches('input,textarea,select') && !target.isContentEditable) { event.preventDefault(); input.focus(); }
+        if (event.key === 'Escape' && target === input) { input.value = ''; input.blur(); render(); }
+      });
+      const feedback = document.getElementById('feedback');
+      let feedbackTimeout;
+      document.querySelectorAll('[data-placeholder]').forEach(link => link.addEventListener('click', event => {
+        event.preventDefault();
+        feedback.classList.add('visible');
+        clearTimeout(feedbackTimeout);
+        feedbackTimeout = setTimeout(() => feedback.classList.remove('visible'), 2600);
+      }));
+      const query = new URLSearchParams(location.search).get('q');
+      if (query) input.value = query;
+      render();
+      document.getElementById('year').textContent = String(new Date().getFullYear());
+    })();
+  </script>
+</body>
+</html>
